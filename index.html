@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="it">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -24,25 +25,26 @@
         };
     </script>
 </head>
+
 <body class="min-h-screen bg-slate-50 text-slate-900 antialiased">
     <div class="mx-auto min-h-screen w-full max-w-5xl pb-28">
         <header class="sticky top-0 z-30 border-b border-slate-200 bg-white/95 px-4 py-4 backdrop-blur">
             <div class="flex items-center justify-between gap-3">
-    <div>
-        <p class="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">OE 2026 - BELLA FRà</p>
-        <h1 class="text-xl font-black text-slate-950 sm:text-2xl">Classifica tribu</h1>
-    </div>
-    
-    <div class="flex items-center gap-3">
-        <button id="openSettings" class="p-2 text-slate-400 hover:text-slate-900 transition">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-            </svg>
-        </button>
-        <div id="connectionStatus" class="rounded-full bg-amber-100 px-3 py-1 text-xs font-bold text-amber-700">Setup richiesto</div>
-    </div>
-</div>
+                <div>
+                    <p class="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">OE 2026 - BELLA FRà</p>
+                    <h1 class="text-xl font-black text-slate-950 sm:text-2xl">Classifica tribu</h1>
+                </div>
+
+                <div class="flex items-center gap-3">
+                    <button id="openSettings" class="p-2 text-slate-400 hover:text-slate-900 transition">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                        </svg>
+                    </button>
+                    <div id="connectionStatus" class="rounded-full bg-amber-100 px-3 py-1 text-xs font-bold text-amber-700">Setup richiesto</div>
+                </div>
+            </div>
         </header>
 
         <main class="px-4 py-5">
@@ -87,30 +89,30 @@
                         </div>
 
                         <div class="grid gap-4 sm:grid-cols-3">
-    <label class="block">
-        <span class="mb-2 block text-sm font-bold text-slate-700">Tipo gioco</span>
-        <select id="tipoGiocoInput" class="h-12 w-full rounded-lg border border-slate-300 bg-white px-3 text-base font-semibold outline-none transition focus:border-sky-500 focus:ring-4 focus:ring-sky-100">
-            <option value="Giocone">Giocone</option>
-            <option value="Piccolo">Piccolo</option>
-        </select>
-    </label>
+                            <label class="block">
+                                <span class="mb-2 block text-sm font-bold text-slate-700">Tipo gioco</span>
+                                <select id="tipoGiocoInput" class="h-12 w-full rounded-lg border border-slate-300 bg-white px-3 text-base font-semibold outline-none transition focus:border-sky-500 focus:ring-4 focus:ring-sky-100">
+                                    <option value="Giocone">Giocone</option>
+                                    <option value="Piccolo">Piccolo</option>
+                                </select>
+                            </label>
 
-    <label class="block">
-        <span class="mb-2 block text-sm font-bold text-slate-700">Posizione</span>
-        <select id="posizioneInput" class="h-12 w-full rounded-lg border border-slate-300 bg-white px-3 text-base font-semibold outline-none transition focus:border-sky-500 focus:ring-4 focus:ring-sky-100">
-            <option value="0">Seleziona...</option>
-            <option value="1">1° Posto</option>
-            <option value="2">2° Posto</option>
-            <option value="3">3° Posto</option>
-            <option value="4">4° Posto</option>
-        </select>
-    </label>
+                            <label class="block">
+                                <span class="mb-2 block text-sm font-bold text-slate-700">Posizione</span>
+                                <select id="posizioneInput" class="h-12 w-full rounded-lg border border-slate-300 bg-white px-3 text-base font-semibold outline-none transition focus:border-sky-500 focus:ring-4 focus:ring-sky-100">
+                                    <option value="0">Seleziona...</option>
+                                    <option value="1">1° Posto</option>
+                                    <option value="2">2° Posto</option>
+                                    <option value="3">3° Posto</option>
+                                    <option value="4">4° Posto</option>
+                                </select>
+                            </label>
 
-    <label class="block">
-        <span class="mb-2 block text-sm font-bold text-slate-700">Punti</span>
-        <input id="puntiInput" type="number" min="0" step="1" value="0" class="h-12 w-full rounded-lg border border-slate-300 bg-white px-3 text-lg font-black outline-none transition focus:border-sky-500 focus:ring-4 focus:ring-sky-100">
-    </label>
-</div>
+                            <label class="block">
+                                <span class="mb-2 block text-sm font-bold text-slate-700">Punti</span>
+                                <input id="puntiInput" type="number" step="1" value="0" class="h-12 w-full rounded-lg border border-slate-300 bg-white px-3 text-lg font-black outline-none transition focus:border-sky-500 focus:ring-4 focus:ring-sky-100">
+                            </label>
+                        </div>
 
                         <button id="saveButton" type="submit" class="flex h-14 w-full items-center justify-center rounded-lg bg-sky-600 px-5 text-base font-black text-white shadow-lg shadow-sky-200 transition active:scale-[0.99] disabled:cursor-not-allowed disabled:bg-slate-300 disabled:shadow-none">
                             Salva punti
@@ -244,7 +246,7 @@
 
         const TRIBES = ["Rossi", "Verdi", "Blu", "Gialli"];
         const FASCE = ["1-2 EL", "3-4-5 EL", "Medie"];
-        const SUBGROUPS = ["Maschi", "Femmine", "Unico"];
+        const SUBGROUPS = ["Maschi", "Femmine", "Unico", "Insieme (3-4-5)", "3a Elementare", "4a Elementare", "5a Elementare"];
 
         const TRIBE_COLORS = {
             Rossi: {
@@ -304,107 +306,73 @@
         document.addEventListener("DOMContentLoaded", init);
 
         function updateFormOptions() {
-    const fascia = els.fasciaInput.value; // Assicurati che questo sia l'ID corretto del select Fascia
-    const selectSottogruppo = els.sottogruppoInput; // Assicurati che questo sia l'ID corretto del select Sottogruppo
-    const currentValue = selectSottogruppo.value;
-    
-    let options = [];
-    
-    // Logica dinamica basata sulla fascia selezionata
-    if (fascia === "1-2 EL") {
-        options = ["Maschi", "Femmine"];
-    } else if (fascia === "3-4-5 EL") {
-        options = ["3a Elementare", "4a Elementare", "5a Elementare"];
-    } else if (fascia === "Medie") {
-        options = ["Maschi", "Femmine"];
-    } else {
-        options = ["Maschi", "Femmine", "Unico"];
-    }
-    
-    // Svuota e ricostruisci il menu a tendina
-    selectSottogruppo.innerHTML = "";
-    options.forEach(opt => {
-        const el = document.createElement("option");
-        el.value = opt;
-        el.textContent = opt;
-        // Mantiene la selezione se il valore era già presente
-        if (opt === currentValue) el.selected = true;
-        selectSottogruppo.appendChild(el);
-    });
-}
+            const fascia = els.fasciaInput.value; // Assicurati che questo sia l'ID corretto del select Fascia
+            const selectSottogruppo = els.sottogruppoInput; // Assicurati che questo sia l'ID corretto del select Sottogruppo
+            const currentValue = selectSottogruppo.value;
+
+            let options = [];
+
+            // Logica dinamica basata sulla fascia selezionata
+            if (fascia === "1-2 EL") {
+                options = ["Maschi", "Femmine"];
+            } else if (fascia === "3-4-5 EL") {
+                options = ["Insieme (3-4-5)", "3a Elementare", "4a Elementare", "5a Elementare"];
+            } else if (fascia === "Medie") {
+                options = ["Maschi", "Femmine"];
+            } else {
+                options = ["Maschi", "Femmine", "Unico"];
+            }
+
+            // Svuota e ricostruisci il menu a tendina
+            selectSottogruppo.innerHTML = "";
+            options.forEach(opt => {
+                const el = document.createElement("option");
+                el.value = opt;
+                el.textContent = opt;
+                // Mantiene la selezione se il valore era già presente
+                if (opt === currentValue) el.selected = true;
+                selectSottogruppo.appendChild(el);
+            });
+        }
 
         function init() {
-    bindElements();
-    bindEvents();
-    els.dateFilter.value = state.selectedDate;
-    maybeCreateSupabaseClient();
-    initCharts();
-    suggestPresetPoints();
-    render();
+            bindElements();
+            bindEvents();
+            els.dateFilter.value = state.selectedDate;
+            maybeCreateSupabaseClient();
+            initCharts();
+            suggestPresetPoints();
+            render();
 
-// Cerca questo blocco dentro init() e modificalo così:
-const filterFascia = document.getElementById('fasciaFilter'); // Corretto ID
-const filterSottogruppo = document.getElementById('subgroupFilter'); // Corretto ID
+            if (!state.client) {
+                setAlert("warning", "Inserisci supabaseUrl e supabaseKey nel file per collegare il database.");
+                updateConnectionStatus("Setup richiesto", "bg-amber-100 text-amber-700");
+                return;
+            }
 
-filterFascia.addEventListener('change', () => {
-    updateFilterOptions(filterFascia.value, filterSottogruppo);
-});
+            loadEntries();
+            subscribeToRealtime();
+        }
 
-function updateFilterOptions(fascia, selectElement) {
-    let options = [];
-    
-    // Logica identica a quella dell'inserimento
-    if (fascia === "3-4-5 EL") {
-        options = ["3a Elementare", "4a Elementare", "5a Elementare"];
-    } else if (fascia === "1-2 EL" || fascia === "Medie") {
-        options = ["Maschi", "Femmine"];
-    } else {
-        // Caso "Tutte" o default
-        options = ["Maschi", "Femmine", "Unico"];
-    }
-    
-    // Svuota e ripopola mantenendo "Tutti" come prima opzione
-    selectElement.innerHTML = '<option value="Tutti">Tutti i sottogruppi</option>';
-    options.forEach(opt => {
-        const el = document.createElement("option");
-        el.value = opt;
-        el.textContent = opt;
-        selectElement.appendChild(el);
-    });
-}
+        function updateFilterOptions(fascia, selectElement) {
+            let options = [];
 
-    // Dentro la funzione init()
-    const settingsBtn = document.getElementById('openSettings');
-    const settingsModal = document.getElementById('settingsModal');
-    
-    if (settingsBtn) {
-        settingsBtn.addEventListener('click', () => {
-            const s = JSON.parse(localStorage.getItem('customScores')) || {
-                "Giocone": { "1": 100, "2": 80, "3": 60, "4": 40 },
-                "Piccolo": { "1": 50, "2": 40, "3": 30, "4": 20 }
-            };
-            
-            document.getElementById('g1').value = s["Giocone"]["1"];
-            document.getElementById('g2').value = s["Giocone"]["2"];
-            document.getElementById('g3').value = s["Giocone"]["3"];
-            document.getElementById('g4').value = s["Giocone"]["4"];
-            document.getElementById('p1').value = s["Piccolo"]["1"];
-            document.getElementById('p2').value = s["Piccolo"]["2"];
-            document.getElementById('p3').value = s["Piccolo"]["3"];
-            document.getElementById('p4').value = s["Piccolo"]["4"];
-            
-            settingsModal.classList.remove('hidden');
-        });
-    }
-    if (!state.client) {
-        setAlert("warning", "Inserisci supabaseUrl e supabaseKey nel file per collegare il database.");
-        updateConnectionStatus("Setup richiesto", "bg-amber-100 text-amber-700");
-        return;
-    }
+            if (fascia === "3-4-5 EL") {
+                options = ["Insieme (3-4-5)", "3a Elementare", "4a Elementare", "5a Elementare"];
+            } else if (fascia === "1-2 EL" || fascia === "Medie") {
+                options = ["Maschi", "Femmine"];
+            } else {
+                options = ["Maschi", "Femmine", "Unico"];
+            }
 
-    loadEntries();
-    subscribeToRealtime();
-}
+            selectElement.innerHTML = '<option value="Tutti">Tutti i sottogruppi</option>';
+            options.forEach(opt => {
+                const el = document.createElement("option");
+                el.value = opt;
+                el.textContent = opt;
+                selectElement.appendChild(el);
+            });
+        }
 
         function bindElements() {
             els.alertBox = document.getElementById("alertBox");
@@ -416,8 +384,8 @@ function updateFilterOptions(fascia, selectElement) {
             els.tribuInput = document.getElementById("tribuInput");
             els.sottogruppoInput = document.getElementById("sottogruppoInput");
             els.tipoGiocoInput = document.getElementById("tipoGiocoInput");
-    els.posizioneInput = document.getElementById("posizioneInput"); // Assicurati che sia qui
-    els.puntiInput = document.getElementById("puntiInput");
+            els.posizioneInput = document.getElementById("posizioneInput"); // Assicurati che sia qui
+            els.puntiInput = document.getElementById("puntiInput");
             els.fasciaFilter = document.getElementById("fasciaFilter");
             els.tribuFilter = document.getElementById("tribuFilter");
             els.subgroupFilter = document.getElementById("subgroupFilter");
@@ -433,24 +401,29 @@ function updateFilterOptions(fascia, selectElement) {
         }
 
         function bindEvents() {
-    document.querySelectorAll(".nav-button").forEach((button) => {
-        button.addEventListener("click", () => setActiveTab(button.dataset.tab));
-    });
+            document.querySelectorAll(".nav-button").forEach((button) => {
+                button.addEventListener("click", () => setActiveTab(button.dataset.tab));
+            });
 
-   els.fasciaInput.addEventListener("change", updateFormOptions);
+            els.fasciaInput.addEventListener("change", updateFormOptions);
 
-    els.tipoGiocoInput.addEventListener("change", suggestPresetPoints);
-    
-    if (els.posizioneInput) {
-        els.posizioneInput.addEventListener("change", suggestPresetPoints);
-    }
-    
-    els.scoreForm.addEventListener("submit", handleSubmit);
-    els.refreshButton.addEventListener("click", loadEntries);
+            els.tipoGiocoInput.addEventListener("change", suggestPresetPoints);
+
+            if (els.posizioneInput) {
+                els.posizioneInput.addEventListener("change", suggestPresetPoints);
+            }
+
+            els.scoreForm.addEventListener("submit", handleSubmit);
+            els.refreshButton.addEventListener("click", loadEntries);
 
             els.fasciaFilter.addEventListener("change", (event) => {
                 state.selectedFascia = event.target.value;
                 render();
+
+                // Aggiorna anche le opzioni del filtro sottogruppo in base alla fascia
+                if (els.subgroupFilter) {
+                    updateFilterOptions(event.target.value, els.subgroupFilter);
+                }
             });
 
             els.tribuFilter.addEventListener("change", (event) => {
@@ -490,10 +463,15 @@ function updateFilterOptions(fascia, selectElement) {
             setAlert("info", "Caricamento dati in corso...");
 
             try {
-                const { data, error } = await state.client
+                const {
+                    data,
+                    error
+                } = await state.client
                     .from("punteggi")
                     .select("*")
-                    .order("created_at", { ascending: false });
+                    .order("created_at", {
+                        ascending: false
+                    });
 
                 if (error) {
                     throw error;
@@ -518,8 +496,11 @@ function updateFilterOptions(fascia, selectElement) {
             state.client
                 .channel("public-punteggi-realtime")
                 .on(
-                    "postgres_changes",
-                    { event: "*", schema: "public", table: "punteggi" },
+                    "postgres_changes", {
+                        event: "*",
+                        schema: "public",
+                        table: "punteggi"
+                    },
                     handleRealtimePayload
                 )
                 .subscribe((status, error) => {
@@ -565,7 +546,7 @@ function updateFilterOptions(fascia, selectElement) {
             }
 
             const points = Number.parseInt(els.puntiInput.value, 10);
-            if (!Number.isInteger(points) || points < 0) {
+            if (!Number.isInteger(points)) {
                 setAlert("warning", "Inserisci un numero di punti valido.");
                 els.puntiInput.focus();
                 return;
@@ -583,7 +564,10 @@ function updateFilterOptions(fascia, selectElement) {
             render();
 
             try {
-                const { data, error } = await state.client
+                const {
+                    data,
+                    error
+                } = await state.client
                     .from("punteggi")
                     .insert(payload)
                     .select()
@@ -628,7 +612,9 @@ function updateFilterOptions(fascia, selectElement) {
             render();
 
             try {
-                const { error } = await state.client.from("punteggi").delete().eq("id", id);
+                const {
+                    error
+                } = await state.client.from("punteggi").delete().eq("id", id);
 
                 if (error) {
                     throw error;
@@ -665,22 +651,32 @@ function updateFilterOptions(fascia, selectElement) {
         }
 
         function suggestPresetPoints() {
-    // 1. Recupera i punteggi salvati o usa quelli di default
-    const savedScores = JSON.parse(localStorage.getItem('customScores')) || {
-        "Giocone": { "1": 100, "2": 80, "3": 60, "4": 40 },
-        "Piccolo": { "1": 50, "2": 40, "3": 30, "4": 20 }
-    };
+            // 1. Recupera i punteggi salvati o usa quelli di default
+            const savedScores = JSON.parse(localStorage.getItem('customScores')) || {
+                "Giocone": {
+                    "1": 100,
+                    "2": 80,
+                    "3": 60,
+                    "4": 40
+                },
+                "Piccolo": {
+                    "1": 50,
+                    "2": 40,
+                    "3": 30,
+                    "4": 20
+                }
+            };
 
-    const gameType = els.tipoGiocoInput.value;
-    const pos = els.posizioneInput.value;
+            const gameType = els.tipoGiocoInput.value;
+            const pos = els.posizioneInput.value;
 
-    // 2. Controllo: se esistono sia il tipo di gioco che la posizione, calcoliamo
-    if (savedScores[gameType] && savedScores[gameType][pos]) {
-        els.puntiInput.value = savedScores[gameType][pos];
-    } else {
-        els.puntiInput.value = 0; 
-    }
-}
+            // 2. Controllo: se esistono sia il tipo di gioco che la posizione, calcoliamo
+            if (savedScores[gameType] && savedScores[gameType][pos]) {
+                els.puntiInput.value = savedScores[gameType][pos];
+            } else {
+                els.puntiInput.value = 0;
+            }
+        }
 
         function render() {
             renderButtons();
@@ -716,9 +712,9 @@ function updateFilterOptions(fascia, selectElement) {
             els.overallTable.innerHTML = rankingTable(overallRows);
             els.totalEntriesBadge.textContent = `${state.entries.length} ${state.entries.length === 1 ? "record" : "record"}`;
 
-            const fasciaEntries = state.selectedFascia === "Tutte"
-                ? state.entries
-                : state.entries.filter((entry) => entry.fascia === state.selectedFascia);
+            const fasciaEntries = state.selectedFascia === "Tutte" ?
+                state.entries :
+                state.entries.filter((entry) => entry.fascia === state.selectedFascia);
             const fasciaRows = rankingRows(totalsByTribe(fasciaEntries));
             updateHorizontalBarChart(charts.fascia, TRIBES, TRIBES.map((tribe) => fasciaRows.find((row) => row.name === tribe)?.points || 0), "Punti fascia");
             els.fasciaTable.innerHTML = rankingTable(fasciaRows);
@@ -729,9 +725,9 @@ function updateFilterOptions(fascia, selectElement) {
             updateSingleColorChart(charts.tribuDetail, FASCE, FASCE.map((fascia) => tribeDetailTotals[fascia] || 0), TRIBE_COLORS[state.selectedTribu], "Punti per fascia");
             els.tribuDetailTable.innerHTML = simpleTable(tribeDetailRows, "Fascia");
 
-            const subgroupEntries = state.selectedSubgroup === "Tutti"
-                ? state.entries
-                : state.entries.filter((entry) => entry.sottogruppo === state.selectedSubgroup);
+            const subgroupEntries = state.selectedSubgroup === "Tutti" ?
+                state.entries :
+                state.entries.filter((entry) => entry.sottogruppo === state.selectedSubgroup);
             const subgroupRows = rankingRows(totalsByTribe(subgroupEntries));
             updateHorizontalBarChart(charts.subgroup, TRIBES, TRIBES.map((tribe) => subgroupRows.find((row) => row.name === tribe)?.points || 0), "Punti sottogruppo");
             els.subgroupTable.innerHTML = rankingTable(subgroupRows);
@@ -825,9 +821,13 @@ function updateFilterOptions(fascia, selectElement) {
                     indexAxis: "y",
                     responsive: true,
                     maintainAspectRatio: false,
-                    animation: { duration: 220 },
+                    animation: {
+                        duration: 220
+                    },
                     plugins: {
-                        legend: { display: false },
+                        legend: {
+                            display: false
+                        },
                         tooltip: {
                             callbacks: {
                                 label: (context) => `${context.dataset.label}: ${formatNumber(context.raw)}`,
@@ -849,7 +849,9 @@ function updateFilterOptions(fascia, selectElement) {
                                 display: false,
                             },
                             ticks: {
-                                font: { weight: 800 },
+                                font: {
+                                    weight: 800
+                                },
                             },
                         },
                     },
@@ -1079,86 +1081,107 @@ function updateFilterOptions(fascia, selectElement) {
 
 
         // Aggiungi questo in fondo al tuo blocco <script> principale
-document.addEventListener("DOMContentLoaded", () => {
-    const settingsBtn = document.getElementById('openSettings');
-    const settingsModal = document.getElementById('settingsModal');
-    const closeSettings = document.getElementById('closeSettings');
-    const saveSettings = document.getElementById('saveSettings');
+        document.addEventListener("DOMContentLoaded", () => {
+            const settingsBtn = document.getElementById('openSettings');
+            const settingsModal = document.getElementById('settingsModal');
+            const closeSettings = document.getElementById('closeSettings');
+            const saveSettings = document.getElementById('saveSettings');
 
-    // 1. Apri Modale
-    if (settingsBtn && settingsModal) {
-        settingsBtn.addEventListener('click', () => {
-            // Carichiamo i dati correnti
-            const s = JSON.parse(localStorage.getItem('customScores')) || {
-                "Giocone": { "1": 100, "2": 80, "3": 60, "4": 40 },
-                "Piccolo": { "1": 50, "2": 40, "3": 30, "4": 20 }
-            };
-            document.getElementById('g1').value = s["Giocone"]["1"];
-            document.getElementById('g2').value = s["Giocone"]["2"];
-            document.getElementById('g3').value = s["Giocone"]["3"];
-            document.getElementById('g4').value = s["Giocone"]["4"];
-            document.getElementById('p1').value = s["Piccolo"]["1"];
-            document.getElementById('p2').value = s["Piccolo"]["2"];
-            document.getElementById('p3').value = s["Piccolo"]["3"];
-            document.getElementById('p4').value = s["Piccolo"]["4"];
-            
-            settingsModal.classList.remove('hidden');
-        });
-    }
+            // 1. Apri Modale
+            if (settingsBtn && settingsModal) {
+                settingsBtn.addEventListener('click', () => {
+                    // Carichiamo i dati correnti
+                    const s = JSON.parse(localStorage.getItem('customScores')) || {
+                        "Giocone": {
+                            "1": 100,
+                            "2": 80,
+                            "3": 60,
+                            "4": 40
+                        },
+                        "Piccolo": {
+                            "1": 50,
+                            "2": 40,
+                            "3": 30,
+                            "4": 20
+                        }
+                    };
+                    document.getElementById('g1').value = s["Giocone"]["1"];
+                    document.getElementById('g2').value = s["Giocone"]["2"];
+                    document.getElementById('g3').value = s["Giocone"]["3"];
+                    document.getElementById('g4').value = s["Giocone"]["4"];
+                    document.getElementById('p1').value = s["Piccolo"]["1"];
+                    document.getElementById('p2').value = s["Piccolo"]["2"];
+                    document.getElementById('p3').value = s["Piccolo"]["3"];
+                    document.getElementById('p4').value = s["Piccolo"]["4"];
 
-    // 2. Chiudi Modale
-    if (closeSettings && settingsModal) {
-        closeSettings.addEventListener('click', () => {
-            settingsModal.classList.add('hidden');
-        });
-    }
-
-    // 3. Salva Punteggi
-    if (saveSettings && settingsModal) {
-        saveSettings.addEventListener('click', () => {
-            const newScores = {
-                "Giocone": { "1": document.getElementById('g1').value, "2": document.getElementById('g2').value, "3": document.getElementById('g3').value, "4": document.getElementById('g4').value },
-                "Piccolo": { "1": document.getElementById('p1').value, "2": document.getElementById('p2').value, "3": document.getElementById('p3').value, "4": document.getElementById('p4').value }
-            };
-            localStorage.setItem('customScores', JSON.stringify(newScores));
-            settingsModal.classList.add('hidden');
-            
-            // Aggiorniamo i punti se l'utente ha già selezionato qualcosa
-            if (typeof suggestPresetPoints === 'function') {
-                suggestPresetPoints();
+                    settingsModal.classList.remove('hidden');
+                });
             }
-            alert("Punteggi salvati!");
+
+            // 2. Chiudi Modale
+            if (closeSettings && settingsModal) {
+                closeSettings.addEventListener('click', () => {
+                    settingsModal.classList.add('hidden');
+                });
+            }
+
+            // 3. Salva Punteggi
+            if (saveSettings && settingsModal) {
+                saveSettings.addEventListener('click', () => {
+                    const newScores = {
+                        "Giocone": {
+                            "1": document.getElementById('g1').value,
+                            "2": document.getElementById('g2').value,
+                            "3": document.getElementById('g3').value,
+                            "4": document.getElementById('g4').value
+                        },
+                        "Piccolo": {
+                            "1": document.getElementById('p1').value,
+                            "2": document.getElementById('p2').value,
+                            "3": document.getElementById('p3').value,
+                            "4": document.getElementById('p4').value
+                        }
+                    };
+                    localStorage.setItem('customScores', JSON.stringify(newScores));
+                    settingsModal.classList.add('hidden');
+
+                    // Aggiorniamo i punti se l'utente ha già selezionato qualcosa
+                    if (typeof suggestPresetPoints === 'function') {
+                        suggestPresetPoints();
+                    }
+                    alert("Punteggi salvati!");
+                });
+            }
         });
-    }
-});
     </script>
 
-<div id="settingsModal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-    <div class="bg-white rounded-xl shadow-xl w-full max-w-sm p-6">
-        <h2 class="text-xl font-black mb-4">Punteggi Predefiniti</h2>
-        <div class="space-y-4">
-            <div>
-                <label class="block text-xs font-bold text-slate-500 uppercase">Giocone (1° 2° 3° 4°)</label>
-                <div class="grid grid-cols-4 gap-2 mt-1">
-                    <input type="number" id="g1" class="border p-2 rounded" placeholder="1°">
-                    <input type="number" id="g2" class="border p-2 rounded" placeholder="2°">
-                    <input type="number" id="g3" class="border p-2 rounded" placeholder="3°">
-                    <input type="number" id="g4" class="border p-2 rounded" placeholder="4°">
+    <div id="settingsModal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+        <div class="bg-white rounded-xl shadow-xl w-full max-w-sm p-6">
+            <h2 class="text-xl font-black mb-4">Punteggi Predefiniti</h2>
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 uppercase">Giocone (1° 2° 3° 4°)</label>
+                    <div class="grid grid-cols-4 gap-2 mt-1">
+                        <input type="number" id="g1" class="border p-2 rounded" placeholder="1°">
+                        <input type="number" id="g2" class="border p-2 rounded" placeholder="2°">
+                        <input type="number" id="g3" class="border p-2 rounded" placeholder="3°">
+                        <input type="number" id="g4" class="border p-2 rounded" placeholder="4°">
+                    </div>
                 </div>
-            </div>
-            <div>
-                <label class="block text-xs font-bold text-slate-500 uppercase">Piccolo (1° 2° 3° 4°)</label>
-                <div class="grid grid-cols-4 gap-2 mt-1">
-                    <input type="number" id="p1" class="border p-2 rounded" placeholder="1°">
-                    <input type="number" id="p2" class="border p-2 rounded" placeholder="2°">
-                    <input type="number" id="p3" class="border p-2 rounded" placeholder="3°">
-                    <input type="number" id="p4" class="border p-2 rounded" placeholder="4°">
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 uppercase">Piccolo (1° 2° 3° 4°)</label>
+                    <div class="grid grid-cols-4 gap-2 mt-1">
+                        <input type="number" id="p1" class="border p-2 rounded" placeholder="1°">
+                        <input type="number" id="p2" class="border p-2 rounded" placeholder="2°">
+                        <input type="number" id="p3" class="border p-2 rounded" placeholder="3°">
+                        <input type="number" id="p4" class="border p-2 rounded" placeholder="4°">
+                    </div>
                 </div>
+                <button id="saveSettings" class="w-full bg-sky-600 text-white py-2 rounded-lg font-black">Salva</button>
+                <button id="closeSettings" class="w-full text-slate-500 py-2">Chiudi</button>
             </div>
-            <button id="saveSettings" class="w-full bg-sky-600 text-white py-2 rounded-lg font-black">Salva</button>
-            <button id="closeSettings" class="w-full text-slate-500 py-2">Chiudi</button>
         </div>
     </div>
-</div>
 </body>
+
 </html>
