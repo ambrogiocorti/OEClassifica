@@ -1,0 +1,1164 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Classifica BellaFrà</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <link rel="shortcut icon" href="https://img.icons8.com/parakeet/48/leaderboard.png" type="image/x-icon">
+    <script>
+        window.tailwind = window.tailwind || {};
+        window.tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ["Inter", "ui-sans-serif", "system-ui", "Segoe UI", "sans-serif"],
+                    },
+                    boxShadow: {
+                        soft: "0 18px 45px rgba(15, 23, 42, 0.08)",
+                    },
+                },
+            },
+        };
+    </script>
+</head>
+<body class="min-h-screen bg-slate-50 text-slate-900 antialiased">
+    <div class="mx-auto min-h-screen w-full max-w-5xl pb-28">
+        <header class="sticky top-0 z-30 border-b border-slate-200 bg-white/95 px-4 py-4 backdrop-blur">
+            <div class="flex items-center justify-between gap-3">
+    <div>
+        <p class="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">OE 2026 - BELLA FRà</p>
+        <h1 class="text-xl font-black text-slate-950 sm:text-2xl">Classifica tribu</h1>
+    </div>
+    
+    <div class="flex items-center gap-3">
+        <button id="openSettings" class="p-2 text-slate-400 hover:text-slate-900 transition">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+            </svg>
+        </button>
+        <div id="connectionStatus" class="rounded-full bg-amber-100 px-3 py-1 text-xs font-bold text-amber-700">Setup richiesto</div>
+    </div>
+</div>
+        </header>
+
+        <main class="px-4 py-5">
+            <section id="alertBox" class="mb-4 hidden rounded-lg border px-4 py-3 text-sm font-medium"></section>
+
+            <section id="tab-inserimento" class="tab-panel space-y-5">
+                <div class="rounded-lg border border-slate-200 bg-white p-4 shadow-soft">
+                    <div class="mb-5">
+                        <h2 class="text-lg font-black text-slate-950">Nuovo punteggio</h2>
+                        <p class="mt-1 text-sm text-slate-500">Inserisci il risultato e salvalo.</p>
+                    </div>
+
+                    <form id="scoreForm" class="space-y-4">
+                        <div class="grid gap-4 sm:grid-cols-3">
+                            <label class="block">
+                                <span class="mb-2 block text-sm font-bold text-slate-700">Fascia</span>
+                                <select id="fasciaInput" class="h-12 w-full rounded-lg border border-slate-300 bg-white px-3 text-base font-semibold outline-none transition focus:border-sky-500 focus:ring-4 focus:ring-sky-100">
+                                    <option value="1-2 EL">1-2 EL</option>
+                                    <option value="3-4-5 EL">3-4-5 EL</option>
+                                    <option value="Medie">Medie</option>
+                                </select>
+                            </label>
+
+                            <label class="block">
+                                <span class="mb-2 block text-sm font-bold text-slate-700">Tribu</span>
+                                <select id="tribuInput" class="h-12 w-full rounded-lg border border-slate-300 bg-white px-3 text-base font-semibold outline-none transition focus:border-sky-500 focus:ring-4 focus:ring-sky-100">
+                                    <option value="Rossi">Rossi</option>
+                                    <option value="Verdi">Verdi</option>
+                                    <option value="Blu">Blu</option>
+                                    <option value="Gialli">Gialli</option>
+                                </select>
+                            </label>
+
+                            <label class="block">
+                                <span class="mb-2 block text-sm font-bold text-slate-700">Sottogruppo</span>
+                                <select id="sottogruppoInput" class="h-12 w-full rounded-lg border border-slate-300 bg-white px-3 text-base font-semibold outline-none transition focus:border-sky-500 focus:ring-4 focus:ring-sky-100">
+                                    <option value="Maschi">Maschi</option>
+                                    <option value="Femmine">Femmine</option>
+                                    <option value="Unico">Unico</option>
+                                </select>
+                            </label>
+                        </div>
+
+                        <div class="grid gap-4 sm:grid-cols-3">
+    <label class="block">
+        <span class="mb-2 block text-sm font-bold text-slate-700">Tipo gioco</span>
+        <select id="tipoGiocoInput" class="h-12 w-full rounded-lg border border-slate-300 bg-white px-3 text-base font-semibold outline-none transition focus:border-sky-500 focus:ring-4 focus:ring-sky-100">
+            <option value="Giocone">Giocone</option>
+            <option value="Piccolo">Piccolo</option>
+        </select>
+    </label>
+
+    <label class="block">
+        <span class="mb-2 block text-sm font-bold text-slate-700">Posizione</span>
+        <select id="posizioneInput" class="h-12 w-full rounded-lg border border-slate-300 bg-white px-3 text-base font-semibold outline-none transition focus:border-sky-500 focus:ring-4 focus:ring-sky-100">
+            <option value="0">Seleziona...</option>
+            <option value="1">1° Posto</option>
+            <option value="2">2° Posto</option>
+            <option value="3">3° Posto</option>
+            <option value="4">4° Posto</option>
+        </select>
+    </label>
+
+    <label class="block">
+        <span class="mb-2 block text-sm font-bold text-slate-700">Punti</span>
+        <input id="puntiInput" type="number" min="0" step="1" value="0" class="h-12 w-full rounded-lg border border-slate-300 bg-white px-3 text-lg font-black outline-none transition focus:border-sky-500 focus:ring-4 focus:ring-sky-100">
+    </label>
+</div>
+
+                        <button id="saveButton" type="submit" class="flex h-14 w-full items-center justify-center rounded-lg bg-sky-600 px-5 text-base font-black text-white shadow-lg shadow-sky-200 transition active:scale-[0.99] disabled:cursor-not-allowed disabled:bg-slate-300 disabled:shadow-none">
+                            Salva punti
+                        </button>
+                    </form>
+                </div>
+
+                <div class="rounded-lg border border-slate-200 bg-white p-4">
+                    <h3 class="text-sm font-black uppercase tracking-wide text-slate-500">Classifica generale</h3>
+                    <div id="quickTotals" class="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-4"></div>
+                </div>
+            </section>
+
+            <section id="tab-classifica" class="tab-panel hidden space-y-5">
+                <div class="grid gap-4 lg:grid-cols-2">
+                    <article class="rounded-lg border border-slate-200 bg-white p-4 shadow-soft">
+                        <div class="mb-4 flex items-start justify-between gap-3">
+                            <div>
+                                <h2 class="text-lg font-black text-slate-950">Classifica generale</h2>
+                            </div>
+                            <span id="totalEntriesBadge" class="rounded-full bg-slate-100 px-3 py-1 text-xs font-bold text-slate-600">0 record</span>
+                        </div>
+                        <div class="h-72">
+                            <canvas id="overallChart"></canvas>
+                        </div>
+                        <div id="overallTable" class="mt-4 overflow-hidden rounded-lg border border-slate-200"></div>
+                    </article>
+
+                    <article class="rounded-lg border border-slate-200 bg-white p-4 shadow-soft">
+                        <div class="mb-4">
+                            <h2 class="text-lg font-black text-slate-950">Classifica per fascia</h2>
+                        </div>
+                        <select id="fasciaFilter" class="mb-4 h-11 w-full rounded-lg border border-slate-300 bg-white px-3 text-sm font-bold outline-none focus:border-sky-500 focus:ring-4 focus:ring-sky-100">
+                            <option value="Tutte">Tutte le fasce</option>
+                            <option value="1-2 EL">1-2 EL</option>
+                            <option value="3-4-5 EL">3-4-5 EL</option>
+                            <option value="Medie">Medie</option>
+                        </select>
+                        <div class="h-72">
+                            <canvas id="fasciaChart"></canvas>
+                        </div>
+                        <div id="fasciaTable" class="mt-4 overflow-hidden rounded-lg border border-slate-200"></div>
+                    </article>
+                </div>
+
+                <div class="grid gap-4 lg:grid-cols-2">
+                    <article class="rounded-lg border border-slate-200 bg-white p-4 shadow-soft">
+                        <div class="mb-4">
+                            <h2 class="text-lg font-black text-slate-950">Dettaglio tribu</h2>
+                        </div>
+                        <select id="tribuFilter" class="mb-4 h-11 w-full rounded-lg border border-slate-300 bg-white px-3 text-sm font-bold outline-none focus:border-sky-500 focus:ring-4 focus:ring-sky-100">
+                            <option value="Rossi">Rossi</option>
+                            <option value="Verdi">Verdi</option>
+                            <option value="Blu">Blu</option>
+                            <option value="Gialli">Gialli</option>
+                        </select>
+                        <div class="h-72">
+                            <canvas id="tribuDetailChart"></canvas>
+                        </div>
+                        <div id="tribuDetailTable" class="mt-4 overflow-hidden rounded-lg border border-slate-200"></div>
+                    </article>
+
+                    <article class="rounded-lg border border-slate-200 bg-white p-4 shadow-soft">
+                        <div class="mb-4">
+                            <h2 class="text-lg font-black text-slate-950">Sottogruppi</h2>
+                        </div>
+                        <select id="subgroupFilter" class="mb-4 h-11 w-full rounded-lg border border-slate-300 bg-white px-3 text-sm font-bold outline-none focus:border-sky-500 focus:ring-4 focus:ring-sky-100">
+                            <option value="Tutti">Tutti i sottogruppi</option>
+                            <option value="Maschi">Maschi</option>
+                            <option value="Femmine">Femmine</option>
+                            <option value="Unico">Unico</option>
+                        </select>
+                        <div class="h-72">
+                            <canvas id="subgroupChart"></canvas>
+                        </div>
+                        <div id="subgroupTable" class="mt-4 overflow-hidden rounded-lg border border-slate-200"></div>
+                    </article>
+                </div>
+
+                <article class="rounded-lg border border-slate-200 bg-white p-4 shadow-soft">
+                    <div class="mb-4 grid gap-3 sm:grid-cols-[1fr_auto] sm:items-end">
+                        <div>
+                            <h2 class="text-lg font-black text-slate-950">Classifica giornaliera</h2>
+                        </div>
+                        <input id="dateFilter" type="date" class="h-11 rounded-lg border border-slate-300 bg-white px-3 text-sm font-bold outline-none focus:border-sky-500 focus:ring-4 focus:ring-sky-100">
+                    </div>
+                    <div class="h-72">
+                        <canvas id="dailyChart"></canvas>
+                    </div>
+                    <div id="dailyTable" class="mt-4 overflow-hidden rounded-lg border border-slate-200"></div>
+                </article>
+            </section>
+
+            <section id="tab-dettagli" class="tab-panel hidden space-y-5">
+                <div class="rounded-lg border border-slate-200 bg-white p-4 shadow-soft">
+                    <div class="mb-4 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+                        <div>
+                            <h2 class="text-lg font-black text-slate-950">Dettagli e storico</h2>
+                            <p class="text-sm text-slate-500">Tutti gli inserimenti, dal piu recente al piu vecchio.</p>
+                        </div>
+                        <button id="refreshButton" type="button" class="h-11 rounded-lg border border-slate-300 px-4 text-sm font-black text-slate-700 transition active:scale-[0.99]">
+                            Aggiorna
+                        </button>
+                    </div>
+                    <div id="historyTable" class="overflow-hidden rounded-lg border border-slate-200"></div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <nav class="fixed inset-x-0 bottom-0 z-40 border-t border-slate-200 bg-white/95 px-3 py-2 shadow-[0_-12px_35px_rgba(15,23,42,0.08)] backdrop-blur">
+        <div class="mx-auto grid max-w-2xl grid-cols-3 gap-2">
+            <button type="button" data-tab="inserimento" class="nav-button rounded-lg px-2 py-3 text-center text-xs font-black text-sky-700 transition">
+                <span class="block text-lg leading-none">+</span>
+                Inserimento
+            </button>
+            <button type="button" data-tab="classifica" class="nav-button rounded-lg px-2 py-3 text-center text-xs font-black text-slate-500 transition">
+                <span class="block text-lg leading-none">#</span>
+                Classifica
+            </button>
+            <button type="button" data-tab="dettagli" class="nav-button rounded-lg px-2 py-3 text-center text-xs font-black text-slate-500 transition">
+                <span class="block text-lg leading-none">X</span>
+                Dettagli
+            </button>
+        </div>
+    </nav>
+
+    <script>
+        const supabaseUrl = "https://uoqbdopwewsdqqttuaza.supabase.co";
+        const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVvcWJkb3B3ZXdzZHFxdHR1YXphIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA5NTAzMzksImV4cCI6MjA5NjUyNjMzOX0.x7tZMvo0ZfOoX-0IVIsbi5RleclyTWQAnN2JqF0YmGE";
+
+        const TRIBES = ["Rossi", "Verdi", "Blu", "Gialli"];
+        const FASCE = ["1-2 EL", "3-4-5 EL", "Medie"];
+        const SUBGROUPS = ["Maschi", "Femmine", "Unico"];
+
+        const TRIBE_COLORS = {
+            Rossi: {
+                bar: "rgba(248, 113, 113, 0.85)",
+                border: "rgb(220, 38, 38)",
+                text: "text-red-700",
+                bg: "bg-red-50",
+                ring: "ring-red-100",
+            },
+            Verdi: {
+                bar: "rgba(74, 222, 128, 0.85)",
+                border: "rgb(22, 163, 74)",
+                text: "text-green-700",
+                bg: "bg-green-50",
+                ring: "ring-green-100",
+            },
+            Blu: {
+                bar: "rgba(96, 165, 250, 0.85)",
+                border: "rgb(37, 99, 235)",
+                text: "text-blue-700",
+                bg: "bg-blue-50",
+                ring: "ring-blue-100",
+            },
+            Gialli: {
+                bar: "rgba(250, 204, 21, 0.9)",
+                border: "rgb(202, 138, 4)",
+                text: "text-yellow-700",
+                bg: "bg-yellow-50",
+                ring: "ring-yellow-100",
+            },
+        };
+
+        const state = {
+            entries: [],
+            activeTab: "inserimento",
+            selectedFascia: "Tutte",
+            selectedTribu: "Rossi",
+            selectedSubgroup: "Tutti",
+            selectedDate: toLocalDateInputValue(new Date()),
+            loading: false,
+            saving: false,
+            deletingIds: new Set(),
+            realtimeStatus: "disconnected",
+            client: null,
+        };
+
+        const charts = {
+            overall: null,
+            fascia: null,
+            tribuDetail: null,
+            subgroup: null,
+            daily: null,
+        };
+
+        const els = {};
+
+        document.addEventListener("DOMContentLoaded", init);
+
+        function updateFormOptions() {
+    const fascia = els.fasciaInput.value; // Assicurati che questo sia l'ID corretto del select Fascia
+    const selectSottogruppo = els.sottogruppoInput; // Assicurati che questo sia l'ID corretto del select Sottogruppo
+    const currentValue = selectSottogruppo.value;
+    
+    let options = [];
+    
+    // Logica dinamica basata sulla fascia selezionata
+    if (fascia === "1-2 EL") {
+        options = ["Maschi", "Femmine"];
+    } else if (fascia === "3-4-5 EL") {
+        options = ["3a Elementare", "4a Elementare", "5a Elementare"];
+    } else if (fascia === "Medie") {
+        options = ["Maschi", "Femmine"];
+    } else {
+        options = ["Maschi", "Femmine", "Unico"];
+    }
+    
+    // Svuota e ricostruisci il menu a tendina
+    selectSottogruppo.innerHTML = "";
+    options.forEach(opt => {
+        const el = document.createElement("option");
+        el.value = opt;
+        el.textContent = opt;
+        // Mantiene la selezione se il valore era già presente
+        if (opt === currentValue) el.selected = true;
+        selectSottogruppo.appendChild(el);
+    });
+}
+
+        function init() {
+    bindElements();
+    bindEvents();
+    els.dateFilter.value = state.selectedDate;
+    maybeCreateSupabaseClient();
+    initCharts();
+    suggestPresetPoints();
+    render();
+
+// Cerca questo blocco dentro init() e modificalo così:
+const filterFascia = document.getElementById('fasciaFilter'); // Corretto ID
+const filterSottogruppo = document.getElementById('subgroupFilter'); // Corretto ID
+
+filterFascia.addEventListener('change', () => {
+    updateFilterOptions(filterFascia.value, filterSottogruppo);
+});
+
+function updateFilterOptions(fascia, selectElement) {
+    let options = [];
+    
+    // Logica identica a quella dell'inserimento
+    if (fascia === "3-4-5 EL") {
+        options = ["3a Elementare", "4a Elementare", "5a Elementare"];
+    } else if (fascia === "1-2 EL" || fascia === "Medie") {
+        options = ["Maschi", "Femmine"];
+    } else {
+        // Caso "Tutte" o default
+        options = ["Maschi", "Femmine", "Unico"];
+    }
+    
+    // Svuota e ripopola mantenendo "Tutti" come prima opzione
+    selectElement.innerHTML = '<option value="Tutti">Tutti i sottogruppi</option>';
+    options.forEach(opt => {
+        const el = document.createElement("option");
+        el.value = opt;
+        el.textContent = opt;
+        selectElement.appendChild(el);
+    });
+}
+
+    // Dentro la funzione init()
+    const settingsBtn = document.getElementById('openSettings');
+    const settingsModal = document.getElementById('settingsModal');
+    
+    if (settingsBtn) {
+        settingsBtn.addEventListener('click', () => {
+            const s = JSON.parse(localStorage.getItem('customScores')) || {
+                "Giocone": { "1": 100, "2": 80, "3": 60, "4": 40 },
+                "Piccolo": { "1": 50, "2": 40, "3": 30, "4": 20 }
+            };
+            
+            document.getElementById('g1').value = s["Giocone"]["1"];
+            document.getElementById('g2').value = s["Giocone"]["2"];
+            document.getElementById('g3').value = s["Giocone"]["3"];
+            document.getElementById('g4').value = s["Giocone"]["4"];
+            document.getElementById('p1').value = s["Piccolo"]["1"];
+            document.getElementById('p2').value = s["Piccolo"]["2"];
+            document.getElementById('p3').value = s["Piccolo"]["3"];
+            document.getElementById('p4').value = s["Piccolo"]["4"];
+            
+            settingsModal.classList.remove('hidden');
+        });
+    }
+    if (!state.client) {
+        setAlert("warning", "Inserisci supabaseUrl e supabaseKey nel file per collegare il database.");
+        updateConnectionStatus("Setup richiesto", "bg-amber-100 text-amber-700");
+        return;
+    }
+
+    loadEntries();
+    subscribeToRealtime();
+}
+
+        function bindElements() {
+            els.alertBox = document.getElementById("alertBox");
+            els.connectionStatus = document.getElementById("connectionStatus");
+            els.scoreForm = document.getElementById("scoreForm");
+            els.saveButton = document.getElementById("saveButton");
+            els.refreshButton = document.getElementById("refreshButton");
+            els.fasciaInput = document.getElementById("fasciaInput");
+            els.tribuInput = document.getElementById("tribuInput");
+            els.sottogruppoInput = document.getElementById("sottogruppoInput");
+            els.tipoGiocoInput = document.getElementById("tipoGiocoInput");
+    els.posizioneInput = document.getElementById("posizioneInput"); // Assicurati che sia qui
+    els.puntiInput = document.getElementById("puntiInput");
+            els.fasciaFilter = document.getElementById("fasciaFilter");
+            els.tribuFilter = document.getElementById("tribuFilter");
+            els.subgroupFilter = document.getElementById("subgroupFilter");
+            els.dateFilter = document.getElementById("dateFilter");
+            els.quickTotals = document.getElementById("quickTotals");
+            els.totalEntriesBadge = document.getElementById("totalEntriesBadge");
+            els.overallTable = document.getElementById("overallTable");
+            els.fasciaTable = document.getElementById("fasciaTable");
+            els.tribuDetailTable = document.getElementById("tribuDetailTable");
+            els.subgroupTable = document.getElementById("subgroupTable");
+            els.dailyTable = document.getElementById("dailyTable");
+            els.historyTable = document.getElementById("historyTable");
+        }
+
+        function bindEvents() {
+    document.querySelectorAll(".nav-button").forEach((button) => {
+        button.addEventListener("click", () => setActiveTab(button.dataset.tab));
+    });
+
+   els.fasciaInput.addEventListener("change", updateFormOptions);
+
+    els.tipoGiocoInput.addEventListener("change", suggestPresetPoints);
+    
+    if (els.posizioneInput) {
+        els.posizioneInput.addEventListener("change", suggestPresetPoints);
+    }
+    
+    els.scoreForm.addEventListener("submit", handleSubmit);
+    els.refreshButton.addEventListener("click", loadEntries);
+
+            els.fasciaFilter.addEventListener("change", (event) => {
+                state.selectedFascia = event.target.value;
+                render();
+            });
+
+            els.tribuFilter.addEventListener("change", (event) => {
+                state.selectedTribu = event.target.value;
+                render();
+            });
+
+            els.subgroupFilter.addEventListener("change", (event) => {
+                state.selectedSubgroup = event.target.value;
+                render();
+            });
+
+            els.dateFilter.addEventListener("change", (event) => {
+                state.selectedDate = event.target.value || toLocalDateInputValue(new Date());
+                render();
+            });
+        }
+
+        function maybeCreateSupabaseClient() {
+            const hasUrl = typeof supabaseUrl === "string" && /^https:\/\/.+\.supabase\.co$/.test(supabaseUrl.trim());
+            const hasKey = typeof supabaseKey === "string" && supabaseKey.trim() && !supabaseKey.includes("INSERISCI_");
+
+            if (!hasUrl || !hasKey || !window.supabase) {
+                return;
+            }
+
+            state.client = window.supabase.createClient(supabaseUrl, supabaseKey);
+        }
+
+        async function loadEntries() {
+            if (!state.client) {
+                return;
+            }
+
+            state.loading = true;
+            render();
+            setAlert("info", "Caricamento dati in corso...");
+
+            try {
+                const { data, error } = await state.client
+                    .from("punteggi")
+                    .select("*")
+                    .order("created_at", { ascending: false });
+
+                if (error) {
+                    throw error;
+                }
+
+                state.entries = normalizeEntries(data || []);
+                setAlert("success", "Dati aggiornati.");
+            } catch (error) {
+                console.error("Errore caricamento punteggi:", error);
+                setAlert("error", readableSupabaseError(error, "Impossibile caricare i punteggi."));
+            } finally {
+                state.loading = false;
+                render();
+            }
+        }
+
+        function subscribeToRealtime() {
+            if (!state.client) {
+                return;
+            }
+
+            state.client
+                .channel("public-punteggi-realtime")
+                .on(
+                    "postgres_changes",
+                    { event: "*", schema: "public", table: "punteggi" },
+                    handleRealtimePayload
+                )
+                .subscribe((status, error) => {
+                    state.realtimeStatus = status;
+
+                    if (status === "SUBSCRIBED") {
+                        updateConnectionStatus("Live", "bg-emerald-100 text-emerald-700");
+                        return;
+                    }
+
+                    if (status === "CHANNEL_ERROR" || status === "TIMED_OUT" || status === "CLOSED") {
+                        console.error("Realtime status:", status, error);
+                        updateConnectionStatus("Realtime non attivo", "bg-amber-100 text-amber-700");
+                    }
+                });
+        }
+
+        function handleRealtimePayload(payload) {
+            const eventType = payload.eventType;
+
+            if (eventType === "INSERT" && payload.new) {
+                upsertEntry(normalizeEntry(payload.new));
+            }
+
+            if (eventType === "UPDATE" && payload.new) {
+                upsertEntry(normalizeEntry(payload.new));
+            }
+
+            if (eventType === "DELETE" && payload.old) {
+                state.entries = state.entries.filter((entry) => String(entry.id) !== String(payload.old.id));
+            }
+
+            sortEntries();
+            render();
+        }
+
+        async function handleSubmit(event) {
+            event.preventDefault();
+
+            if (!state.client) {
+                setAlert("warning", "Configura Supabase prima di salvare i punti.");
+                return;
+            }
+
+            const points = Number.parseInt(els.puntiInput.value, 10);
+            if (!Number.isInteger(points) || points < 0) {
+                setAlert("warning", "Inserisci un numero di punti valido.");
+                els.puntiInput.focus();
+                return;
+            }
+
+            const payload = {
+                fascia: els.fasciaInput.value,
+                tribu: els.tribuInput.value,
+                sottogruppo: els.sottogruppoInput.value,
+                tipo_gioco: els.tipoGiocoInput.value,
+                punti: points,
+            };
+
+            state.saving = true;
+            render();
+
+            try {
+                const { data, error } = await state.client
+                    .from("punteggi")
+                    .insert(payload)
+                    .select()
+                    .single();
+
+                if (error) {
+                    throw error;
+                }
+
+                if (data) {
+                    upsertEntry(normalizeEntry(data));
+                    sortEntries();
+                }
+
+                setAlert("success", "Punteggio salvato.");
+                els.scoreForm.reset();
+                suggestPresetPoints();
+                render();
+            } catch (error) {
+                console.error("Errore salvataggio punteggio:", error);
+                setAlert("error", readableSupabaseError(error, "Impossibile salvare il punteggio."));
+            } finally {
+                state.saving = false;
+                render();
+            }
+        }
+
+        async function deleteEntry(id) {
+            if (!state.client) {
+                setAlert("warning", "Configura Supabase prima di eliminare i punti.");
+                return;
+            }
+
+            const entry = state.entries.find((item) => String(item.id) === String(id));
+            const label = entry ? `${entry.tribu}, ${entry.fascia}, ${entry.punti} punti` : "questo inserimento";
+            const confirmed = window.confirm(`Sei sicuro di voler eliminare ${label}?`);
+            if (!confirmed) {
+                return;
+            }
+
+            state.deletingIds.add(String(id));
+            render();
+
+            try {
+                const { error } = await state.client.from("punteggi").delete().eq("id", id);
+
+                if (error) {
+                    throw error;
+                }
+
+                state.entries = state.entries.filter((item) => String(item.id) !== String(id));
+                setAlert("success", "Inserimento eliminato.");
+            } catch (error) {
+                console.error("Errore eliminazione punteggio:", error);
+                setAlert("error", readableSupabaseError(error, "Impossibile eliminare l'inserimento."));
+            } finally {
+                state.deletingIds.delete(String(id));
+                render();
+            }
+        }
+
+        function setActiveTab(tabName) {
+            state.activeTab = tabName;
+
+            document.querySelectorAll(".tab-panel").forEach((panel) => {
+                panel.classList.toggle("hidden", panel.id !== `tab-${tabName}`);
+            });
+
+            document.querySelectorAll(".nav-button").forEach((button) => {
+                const isActive = button.dataset.tab === tabName;
+                button.classList.toggle("bg-sky-50", isActive);
+                button.classList.toggle("text-sky-700", isActive);
+                button.classList.toggle("text-slate-500", !isActive);
+            });
+
+            requestAnimationFrame(() => {
+                Object.values(charts).forEach((chart) => chart && chart.resize());
+            });
+        }
+
+        function suggestPresetPoints() {
+    // 1. Recupera i punteggi salvati o usa quelli di default
+    const savedScores = JSON.parse(localStorage.getItem('customScores')) || {
+        "Giocone": { "1": 100, "2": 80, "3": 60, "4": 40 },
+        "Piccolo": { "1": 50, "2": 40, "3": 30, "4": 20 }
+    };
+
+    const gameType = els.tipoGiocoInput.value;
+    const pos = els.posizioneInput.value;
+
+    // 2. Controllo: se esistono sia il tipo di gioco che la posizione, calcoliamo
+    if (savedScores[gameType] && savedScores[gameType][pos]) {
+        els.puntiInput.value = savedScores[gameType][pos];
+    } else {
+        els.puntiInput.value = 0; 
+    }
+}
+
+        function render() {
+            renderButtons();
+            renderQuickTotals();
+            renderChartsAndTables();
+            renderHistory();
+            renderEmptyStateHints();
+        }
+
+        function renderButtons() {
+            els.saveButton.disabled = state.saving || state.loading || !state.client;
+            els.saveButton.textContent = state.saving ? "Salvataggio..." : "Salva punti";
+            els.refreshButton.disabled = state.loading || !state.client;
+            els.refreshButton.textContent = state.loading ? "Aggiorno..." : "Aggiorna";
+        }
+
+        function renderQuickTotals() {
+            const totals = totalsByTribe(state.entries);
+            els.quickTotals.innerHTML = TRIBES.map((tribe) => {
+                const colors = TRIBE_COLORS[tribe];
+                return `
+                    <div class="${colors.bg} ${colors.text} rounded-lg p-3 ring-1 ${colors.ring}">
+                        <p class="text-xs font-black uppercase tracking-wide">${tribe}</p>
+                        <p class="mt-1 text-2xl font-black">${formatNumber(totals[tribe])}</p>
+                    </div>
+                `;
+            }).join("");
+        }
+
+        function renderChartsAndTables() {
+            const overallRows = rankingRows(totalsByTribe(state.entries));
+            updateHorizontalBarChart(charts.overall, TRIBES, TRIBES.map((tribe) => overallRows.find((row) => row.name === tribe)?.points || 0), "Punti totali");
+            els.overallTable.innerHTML = rankingTable(overallRows);
+            els.totalEntriesBadge.textContent = `${state.entries.length} ${state.entries.length === 1 ? "record" : "record"}`;
+
+            const fasciaEntries = state.selectedFascia === "Tutte"
+                ? state.entries
+                : state.entries.filter((entry) => entry.fascia === state.selectedFascia);
+            const fasciaRows = rankingRows(totalsByTribe(fasciaEntries));
+            updateHorizontalBarChart(charts.fascia, TRIBES, TRIBES.map((tribe) => fasciaRows.find((row) => row.name === tribe)?.points || 0), "Punti fascia");
+            els.fasciaTable.innerHTML = rankingTable(fasciaRows);
+
+            const tribeEntries = state.entries.filter((entry) => entry.tribu === state.selectedTribu);
+            const tribeDetailTotals = totalsByKey(tribeEntries, "fascia", FASCE);
+            const tribeDetailRows = rankingRows(tribeDetailTotals, FASCE);
+            updateSingleColorChart(charts.tribuDetail, FASCE, FASCE.map((fascia) => tribeDetailTotals[fascia] || 0), TRIBE_COLORS[state.selectedTribu], "Punti per fascia");
+            els.tribuDetailTable.innerHTML = simpleTable(tribeDetailRows, "Fascia");
+
+            const subgroupEntries = state.selectedSubgroup === "Tutti"
+                ? state.entries
+                : state.entries.filter((entry) => entry.sottogruppo === state.selectedSubgroup);
+            const subgroupRows = rankingRows(totalsByTribe(subgroupEntries));
+            updateHorizontalBarChart(charts.subgroup, TRIBES, TRIBES.map((tribe) => subgroupRows.find((row) => row.name === tribe)?.points || 0), "Punti sottogruppo");
+            els.subgroupTable.innerHTML = rankingTable(subgroupRows);
+
+            const dailyEntries = state.entries.filter((entry) => toLocalDateInputValue(new Date(entry.created_at)) === state.selectedDate);
+            const dailyRows = rankingRows(totalsByTribe(dailyEntries));
+            updateHorizontalBarChart(charts.daily, TRIBES, TRIBES.map((tribe) => dailyRows.find((row) => row.name === tribe)?.points || 0), "Punti giornata");
+            els.dailyTable.innerHTML = rankingTable(dailyRows);
+        }
+
+        function renderHistory() {
+            if (!state.entries.length) {
+                els.historyTable.innerHTML = emptyMessage("Nessun inserimento presente.");
+                return;
+            }
+
+            els.historyTable.innerHTML = `
+                <div class="divide-y divide-slate-200">
+                    ${state.entries.map((entry) => {
+                        const colors = TRIBE_COLORS[entry.tribu] || TRIBE_COLORS.Rossi;
+                        const isDeleting = state.deletingIds.has(String(entry.id));
+
+                        return `
+                            <div class="grid grid-cols-[1fr_auto] gap-3 bg-white p-3">
+                                <div class="min-w-0">
+                                    <div class="flex flex-wrap items-center gap-2">
+                                        <span class="${colors.bg} ${colors.text} rounded-full px-2 py-1 text-xs font-black">${entry.tribu}</span>
+                                        <span class="rounded-full bg-slate-100 px-2 py-1 text-xs font-bold text-slate-600">${entry.fascia}</span>
+                                        <span class="rounded-full bg-slate-100 px-2 py-1 text-xs font-bold text-slate-600">${entry.sottogruppo}</span>
+                                    </div>
+                                    <p class="mt-2 text-sm font-bold text-slate-700">${entry.tipo_gioco} - <span class="text-slate-950">${formatNumber(entry.punti)} punti</span></p>
+                                    <p class="mt-1 text-xs text-slate-500">${formatDateTime(entry.created_at)}</p>
+                                </div>
+                                <button type="button" class="delete-button h-11 w-11 rounded-lg bg-red-50 text-lg font-black text-red-700 transition active:scale-95 disabled:opacity-50" data-id="${entry.id}" ${isDeleting ? "disabled" : ""} aria-label="Elimina inserimento">
+                                    ${isDeleting ? "..." : "X"}
+                                </button>
+                            </div>
+                        `;
+                    }).join("")}
+                </div>
+            `;
+
+            els.historyTable.querySelectorAll(".delete-button").forEach((button) => {
+                button.addEventListener("click", () => deleteEntry(button.dataset.id));
+            });
+        }
+
+        function renderEmptyStateHints() {
+            if (state.loading || state.entries.length || !state.client) {
+                return;
+            }
+
+            if (state.activeTab !== "inserimento") {
+                setAlert("info", "Il database e' collegato, ma non ci sono ancora punteggi.");
+            }
+        }
+
+        function initCharts() {
+            if (!window.Chart) {
+                setAlert("warning", "Chart.js non e' stato caricato: le tabelle funzionano, i grafici no.");
+                return;
+            }
+
+            Chart.defaults.font.family = "Inter, ui-sans-serif, system-ui, Segoe UI, sans-serif";
+            Chart.defaults.color = "#475569";
+
+            charts.overall = createHorizontalBarChart("overallChart");
+            charts.fascia = createHorizontalBarChart("fasciaChart");
+            charts.tribuDetail = createHorizontalBarChart("tribuDetailChart");
+            charts.subgroup = createHorizontalBarChart("subgroupChart");
+            charts.daily = createHorizontalBarChart("dailyChart");
+        }
+
+        function createHorizontalBarChart(canvasId) {
+            const canvas = document.getElementById(canvasId);
+
+            return new Chart(canvas, {
+                type: "bar",
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: "Punti",
+                        data: [],
+                        backgroundColor: [],
+                        borderColor: [],
+                        borderWidth: 2,
+                        borderRadius: 8,
+                    }],
+                },
+                options: {
+                    indexAxis: "y",
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    animation: { duration: 220 },
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: (context) => `${context.dataset.label}: ${formatNumber(context.raw)}`,
+                            },
+                        },
+                    },
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            ticks: {
+                                precision: 0,
+                            },
+                            grid: {
+                                color: "rgba(148, 163, 184, 0.2)",
+                            },
+                        },
+                        y: {
+                            grid: {
+                                display: false,
+                            },
+                            ticks: {
+                                font: { weight: 800 },
+                            },
+                        },
+                    },
+                },
+            });
+        }
+
+        function updateHorizontalBarChart(chart, labels, values, datasetLabel) {
+            if (!chart) {
+                return;
+            }
+
+            chart.data.labels = labels;
+            chart.data.datasets[0].label = datasetLabel;
+            chart.data.datasets[0].data = values;
+            chart.data.datasets[0].backgroundColor = labels.map((label) => (TRIBE_COLORS[label] || TRIBE_COLORS.Rossi).bar);
+            chart.data.datasets[0].borderColor = labels.map((label) => (TRIBE_COLORS[label] || TRIBE_COLORS.Rossi).border);
+            chart.update();
+        }
+
+        function updateSingleColorChart(chart, labels, values, color, datasetLabel) {
+            if (!chart) {
+                return;
+            }
+
+            chart.data.labels = labels;
+            chart.data.datasets[0].label = datasetLabel;
+            chart.data.datasets[0].data = values;
+            chart.data.datasets[0].backgroundColor = labels.map(() => color.bar);
+            chart.data.datasets[0].borderColor = labels.map(() => color.border);
+            chart.update();
+        }
+
+        function totalsByTribe(entries) {
+            return totalsByKey(entries, "tribu", TRIBES);
+        }
+
+        function totalsByKey(entries, key, knownKeys) {
+            const totals = Object.fromEntries(knownKeys.map((item) => [item, 0]));
+
+            entries.forEach((entry) => {
+                const value = entry[key];
+                if (!Object.prototype.hasOwnProperty.call(totals, value)) {
+                    totals[value] = 0;
+                }
+                totals[value] += Number(entry.punti) || 0;
+            });
+
+            return totals;
+        }
+
+        function rankingRows(totals, preferredOrder = TRIBES) {
+            return Object.keys(totals)
+                .sort((a, b) => {
+                    const pointsDelta = totals[b] - totals[a];
+                    if (pointsDelta !== 0) {
+                        return pointsDelta;
+                    }
+                    return preferredOrder.indexOf(a) - preferredOrder.indexOf(b);
+                })
+                .map((name, index) => ({
+                    position: index + 1,
+                    name,
+                    points: totals[name] || 0,
+                }));
+        }
+
+        function rankingTable(rows) {
+            if (!rows.length) {
+                return emptyMessage("Nessun dato disponibile.");
+            }
+
+            return `
+                <table class="w-full text-left text-sm">
+                    <thead class="bg-slate-50 text-xs uppercase tracking-wide text-slate-500">
+                        <tr>
+                            <th class="px-3 py-2">Pos.</th>
+                            <th class="px-3 py-2">Tribu</th>
+                            <th class="px-3 py-2 text-right">Punti</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-200 bg-white">
+                        ${rows.map((row) => {
+                            const colors = TRIBE_COLORS[row.name] || TRIBE_COLORS.Rossi;
+                            return `
+                                <tr>
+                                    <td class="px-3 py-3 font-black text-slate-500">${row.position}</td>
+                                    <td class="px-3 py-3">
+                                        <span class="${colors.bg} ${colors.text} rounded-full px-2 py-1 text-xs font-black">${row.name}</span>
+                                    </td>
+                                    <td class="px-3 py-3 text-right text-base font-black text-slate-950">${formatNumber(row.points)}</td>
+                                </tr>
+                            `;
+                        }).join("")}
+                    </tbody>
+                </table>
+            `;
+        }
+
+        function simpleTable(rows, firstColumnLabel) {
+            if (!rows.length) {
+                return emptyMessage("Nessun dato disponibile.");
+            }
+
+            return `
+                <table class="w-full text-left text-sm">
+                    <thead class="bg-slate-50 text-xs uppercase tracking-wide text-slate-500">
+                        <tr>
+                            <th class="px-3 py-2">${firstColumnLabel}</th>
+                            <th class="px-3 py-2 text-right">Punti</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-200 bg-white">
+                        ${rows.map((row) => `
+                            <tr>
+                                <td class="px-3 py-3 font-black text-slate-700">${row.name}</td>
+                                <td class="px-3 py-3 text-right text-base font-black text-slate-950">${formatNumber(row.points)}</td>
+                            </tr>
+                        `).join("")}
+                    </tbody>
+                </table>
+            `;
+        }
+
+        function emptyMessage(message) {
+            return `<div class="bg-white px-4 py-5 text-center text-sm font-semibold text-slate-500">${message}</div>`;
+        }
+
+        function normalizeEntries(entries) {
+            return entries.map(normalizeEntry).filter(Boolean);
+        }
+
+        function normalizeEntry(entry) {
+            if (!entry || entry.id == null) {
+                return null;
+            }
+
+            return {
+                id: entry.id,
+                created_at: entry.created_at || new Date().toISOString(),
+                fascia: entry.fascia || "1-2 EL",
+                tribu: entry.tribu || "Rossi",
+                sottogruppo: entry.sottogruppo || "Unico",
+                tipo_gioco: entry.tipo_gioco || "Giocone",
+                punti: Number(entry.punti) || 0,
+            };
+        }
+
+        function upsertEntry(entry) {
+            if (!entry) {
+                return;
+            }
+
+            const index = state.entries.findIndex((item) => String(item.id) === String(entry.id));
+            if (index >= 0) {
+                state.entries.splice(index, 1, entry);
+                return;
+            }
+
+            state.entries.unshift(entry);
+        }
+
+        function sortEntries() {
+            state.entries.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+        }
+
+        function setAlert(type, message) {
+            const styles = {
+                info: "border-sky-200 bg-sky-50 text-sky-700",
+                success: "border-emerald-200 bg-emerald-50 text-emerald-700",
+                warning: "border-amber-200 bg-amber-50 text-amber-800",
+                error: "border-red-200 bg-red-50 text-red-700",
+            };
+
+            els.alertBox.className = `mb-4 rounded-lg border px-4 py-3 text-sm font-medium ${styles[type] || styles.info}`;
+            els.alertBox.textContent = message;
+            els.alertBox.classList.remove("hidden");
+
+            if (type === "success" || type === "info") {
+                window.clearTimeout(setAlert.timeout);
+                setAlert.timeout = window.setTimeout(() => {
+                    els.alertBox.classList.add("hidden");
+                }, 2800);
+            }
+        }
+
+        function updateConnectionStatus(text, className) {
+            els.connectionStatus.className = `rounded-full px-3 py-1 text-xs font-bold ${className}`;
+            els.connectionStatus.textContent = text;
+        }
+
+        function readableSupabaseError(error, fallback) {
+            if (!error) {
+                return fallback;
+            }
+
+            if (error.message) {
+                return `${fallback} ${error.message}`;
+            }
+
+            return fallback;
+        }
+
+        function formatNumber(value) {
+            return new Intl.NumberFormat("it-IT").format(Number(value) || 0);
+        }
+
+        function formatDateTime(value) {
+            const date = new Date(value);
+            if (Number.isNaN(date.getTime())) {
+                return "";
+            }
+
+            return new Intl.DateTimeFormat("it-IT", {
+                day: "2-digit",
+                month: "2-digit",
+                year: "numeric",
+                hour: "2-digit",
+                minute: "2-digit",
+            }).format(date);
+        }
+
+        function toLocalDateInputValue(date) {
+            const localDate = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
+            return localDate.toISOString().slice(0, 10);
+        }
+
+
+        // Aggiungi questo in fondo al tuo blocco <script> principale
+document.addEventListener("DOMContentLoaded", () => {
+    const settingsBtn = document.getElementById('openSettings');
+    const settingsModal = document.getElementById('settingsModal');
+    const closeSettings = document.getElementById('closeSettings');
+    const saveSettings = document.getElementById('saveSettings');
+
+    // 1. Apri Modale
+    if (settingsBtn && settingsModal) {
+        settingsBtn.addEventListener('click', () => {
+            // Carichiamo i dati correnti
+            const s = JSON.parse(localStorage.getItem('customScores')) || {
+                "Giocone": { "1": 100, "2": 80, "3": 60, "4": 40 },
+                "Piccolo": { "1": 50, "2": 40, "3": 30, "4": 20 }
+            };
+            document.getElementById('g1').value = s["Giocone"]["1"];
+            document.getElementById('g2').value = s["Giocone"]["2"];
+            document.getElementById('g3').value = s["Giocone"]["3"];
+            document.getElementById('g4').value = s["Giocone"]["4"];
+            document.getElementById('p1').value = s["Piccolo"]["1"];
+            document.getElementById('p2').value = s["Piccolo"]["2"];
+            document.getElementById('p3').value = s["Piccolo"]["3"];
+            document.getElementById('p4').value = s["Piccolo"]["4"];
+            
+            settingsModal.classList.remove('hidden');
+        });
+    }
+
+    // 2. Chiudi Modale
+    if (closeSettings && settingsModal) {
+        closeSettings.addEventListener('click', () => {
+            settingsModal.classList.add('hidden');
+        });
+    }
+
+    // 3. Salva Punteggi
+    if (saveSettings && settingsModal) {
+        saveSettings.addEventListener('click', () => {
+            const newScores = {
+                "Giocone": { "1": document.getElementById('g1').value, "2": document.getElementById('g2').value, "3": document.getElementById('g3').value, "4": document.getElementById('g4').value },
+                "Piccolo": { "1": document.getElementById('p1').value, "2": document.getElementById('p2').value, "3": document.getElementById('p3').value, "4": document.getElementById('p4').value }
+            };
+            localStorage.setItem('customScores', JSON.stringify(newScores));
+            settingsModal.classList.add('hidden');
+            
+            // Aggiorniamo i punti se l'utente ha già selezionato qualcosa
+            if (typeof suggestPresetPoints === 'function') {
+                suggestPresetPoints();
+            }
+            alert("Punteggi salvati!");
+        });
+    }
+});
+    </script>
+
+<div id="settingsModal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+    <div class="bg-white rounded-xl shadow-xl w-full max-w-sm p-6">
+        <h2 class="text-xl font-black mb-4">Punteggi Predefiniti</h2>
+        <div class="space-y-4">
+            <div>
+                <label class="block text-xs font-bold text-slate-500 uppercase">Giocone (1° 2° 3° 4°)</label>
+                <div class="grid grid-cols-4 gap-2 mt-1">
+                    <input type="number" id="g1" class="border p-2 rounded" placeholder="1°">
+                    <input type="number" id="g2" class="border p-2 rounded" placeholder="2°">
+                    <input type="number" id="g3" class="border p-2 rounded" placeholder="3°">
+                    <input type="number" id="g4" class="border p-2 rounded" placeholder="4°">
+                </div>
+            </div>
+            <div>
+                <label class="block text-xs font-bold text-slate-500 uppercase">Piccolo (1° 2° 3° 4°)</label>
+                <div class="grid grid-cols-4 gap-2 mt-1">
+                    <input type="number" id="p1" class="border p-2 rounded" placeholder="1°">
+                    <input type="number" id="p2" class="border p-2 rounded" placeholder="2°">
+                    <input type="number" id="p3" class="border p-2 rounded" placeholder="3°">
+                    <input type="number" id="p4" class="border p-2 rounded" placeholder="4°">
+                </div>
+            </div>
+            <button id="saveSettings" class="w-full bg-sky-600 text-white py-2 rounded-lg font-black">Salva</button>
+            <button id="closeSettings" class="w-full text-slate-500 py-2">Chiudi</button>
+        </div>
+    </div>
+</div>
+</body>
+</html>
