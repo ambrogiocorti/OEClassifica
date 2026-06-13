@@ -260,6 +260,14 @@
         </main>
     </div>
 
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="hidden fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/40 backdrop-blur-sm">
+        <div class="flex flex-col items-center">
+            <div class="h-12 w-12 animate-spin rounded-full border-4 border-sky-600 border-t-transparent"></div>
+            <p class="mt-4 font-bold text-white">Caricamento in corso...</p>
+        </div>
+    </div>
+
     <nav class="fixed inset-x-0 bottom-0 z-40 border-t border-slate-200 bg-white/95 px-3 py-2 shadow-[0_-12px_35px_rgba(15,23,42,0.08)] backdrop-blur dark:bg-slate-900/95 dark:border-slate-800">
         <div class="mx-auto grid max-w-2xl grid-cols-3 gap-2">
             <button type="button" data-tab="inserimento" class="nav-button rounded-lg px-2 py-3 text-center text-xs font-black text-sky-700 transition dark:text-sky-400">
@@ -274,8 +282,6 @@
                 <span class="block text-lg leading-none">X</span>
                 Dettagli
             </button>
-            <script src='https://cdn.jotfor.ms/agent/embedjs/019eae23904c707ab0dbf137fc27d65c3074/embed.js'>
-</script>
         </div>
     </nav>
 
@@ -334,7 +340,8 @@
             animatore: localStorage.getItem("animatore_nome") || null,
             auditAuthenticated: false,
             auditLogs: [],
-            historySearchQuery: ""
+            historySearchQuery: "",
+            offlineQueue: JSON.parse(localStorage.getItem("offline_scores") || "[]")
         };
 
         const charts = {
@@ -380,19 +387,24 @@
         }
 
         function init() {
+            // 1. Colleghiamo subito gli elementi HTML e gli eventi
+            bindElements();
+            bindEvents();
+
             // Setup Dark Mode
             if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
                 document.documentElement.classList.add('dark');
                 updateDarkToggleIcons(true);
             }
 
-            bindElements();
-            bindEvents();
             els.dateFilter.value = state.selectedDate;
             maybeCreateSupabaseClient();
             initCharts();
             suggestPresetPoints();
             render();
+
+            // Chiediamo chi è l'animatore a prescindere dallo stato di Supabase
+            checkAnimatore();
 
             if (!state.client) {
                 setAlert("warning", "Inserisci supabaseUrl e supabaseKey nel file per collegare il database.");
@@ -400,7 +412,6 @@
                 return;
             }
 
-            checkAnimatore();
             // Se l'animatore è già loggato tramite localStorage, logghiamo la nuova sessione
             if (state.animatore) {
                 logAction("AUTH_SESSION_RESUME", `Sessione ripristinata per l'utente: ${state.animatore}`);
@@ -408,6 +419,10 @@
 
             loadEntries();
             subscribeToRealtime();
+
+            // Gestione riconnessione automatica
+            window.addEventListener("online", syncOfflineQueue);
+            if (state.offlineQueue.length > 0) syncOfflineQueue();
         }
 
         function updateFilterOptions(fascia, selectElement) {
@@ -462,6 +477,7 @@
             els.dailyTable = document.getElementById("dailyTable");
             els.historyTable = document.getElementById("historyTable");
             els.auditTable = document.getElementById("auditTable");
+            els.loadingOverlay = document.getElementById("loadingOverlay");
             els.loginModal = document.getElementById("loginModal");
             els.loginForm = document.getElementById("loginForm");
             els.animatoreInput = document.getElementById("animatoreInput");
@@ -583,6 +599,29 @@
             } catch (e) { console.error("Log error:", e); }
         }
 
+        async function syncOfflineQueue() {
+            if (!state.client || state.offlineQueue.length === 0 || !navigator.onLine) return;
+
+            console.log("Tentativo di sincronizzazione coda offline...");
+            const queue = [...state.offlineQueue];
+            state.offlineQueue = [];
+            localStorage.setItem("offline_scores", "[]");
+
+            for (const payload of queue) {
+                try {
+                    const { error } = await state.client.from("punteggi").insert(payload);
+                    if (error) throw error;
+                    logAction("OFFLINE_SYNC_SUCCESS", `Sincronizzato punteggio di ${payload.tribu} (${payload.note})`);
+                } catch (e) {
+                    console.error("Errore durante la sincronizzazione offline:", e);
+                    // In caso di errore, lo rimettiamo in coda
+                    state.offlineQueue.push(payload);
+                }
+            }
+            localStorage.setItem("offline_scores", JSON.stringify(state.offlineQueue));
+            if (state.offlineQueue.length === 0) setAlert("success", "Tutti i dati offline sono stati sincronizzati!");
+        }
+
         function maybeCreateSupabaseClient() {
             const hasUrl = typeof supabaseUrl === "string" && /^https:\/\/.+\.supabase\.co$/.test(supabaseUrl.trim());
             const hasKey = typeof supabaseKey === "string" && supabaseKey.trim() && !supabaseKey.includes("INSERISCI_");
@@ -652,9 +691,16 @@
                         return;
                     }
 
-                    if (status === "CHANNEL_ERROR" || status === "TIMED_OUT" || status === "CLOSED") {
+                    if (status === "CHANNEL_ERROR") {
                         console.error("Realtime status:", status, error);
-                        updateConnectionStatus("Realtime non attivo", "bg-amber-100 text-amber-700");
+                        updateConnectionStatus("Errore Live", "bg-red-100 text-red-700");
+                        setAlert("error", "Errore aggiornamento live. Verifica di aver abilitato il Realtime per la tabella 'punteggi' in Supabase.");
+                        return;
+                    }
+
+                    if (status === "TIMED_OUT" || status === "CLOSED") {
+                        console.error("Realtime status:", status, error);
+                        updateConnectionStatus("Disconnesso", "bg-amber-100 text-amber-700");
                     }
                 });
         }
@@ -720,18 +766,12 @@
             render();
 
             try {
-                const {
-                    data,
-                    error
-                } = await state.client
-                    .from("punteggi")
-                    .insert(payload)
-                    .select()
-                    .single();
+                // Se siamo offline, saltiamo direttamente al catch per il salvataggio locale
+                if (!navigator.onLine) throw new Error("Offline");
 
-                if (error) {
-                    throw error;
-                }
+                const { data, error } = await state.client.from("punteggi").insert(payload).select().single();
+
+                if (error) throw error;
 
                 if (data) {
                     upsertEntry(normalizeEntry(data));
@@ -739,31 +779,35 @@
                 }
 
                 setAlert("success", "Punteggio salvato.");
+                logScoreCreation(payload);
+            } catch (error) {
+                console.warn("Connessione assente o errore. Salvataggio in coda offline...", error);
                 
-                // Generazione log professionale e strutturato
-                const posText = els.posizioneInput.value !== "0" ? `${els.posizioneInput.value}°` : "NON_SPECIF.";
-                const logDetails = [
-                    `[SCORE_ENTRY]`,
-                    `FASCIA: ${payload.fascia}`,
-                    `TRIBU: ${payload.tribu}`,
-                    `SOTTOGRUPPO: ${payload.sottogruppo}`,
-                    `GIOCO: ${payload.tipo_gioco} (POS: ${posText})`,
-                    `PUNTI: ${payload.punti > 0 ? '+' : ''}${payload.punti}`,
-                    `NOTA: ${payload.note}`
-                ].join(" | ");
+                state.offlineQueue.push(payload);
+                localStorage.setItem("offline_scores", JSON.stringify(state.offlineQueue));
                 
-                logAction("SCORE_CREATE", logDetails);
+                setAlert("warning", "Sei offline! Il punteggio è stato salvato sul telefono e verrà inviato appena torna la connessione.");
+            } finally {
                 els.scoreForm.reset();
                 updateFormOptions();
                 suggestPresetPoints();
-                render();
-            } catch (error) {
-                console.error("Errore salvataggio punteggio:", error);
-                setAlert("error", readableSupabaseError(error, "Impossibile salvare il punteggio."));
-            } finally {
                 state.saving = false;
                 render();
             }
+        }
+
+        function logScoreCreation(payload) {
+            const posText = els.posizioneInput.value !== "0" ? `${els.posizioneInput.value}°` : "NON_SPECIF.";
+            const logDetails = [
+                `[SCORE_ENTRY]`,
+                `FASCIA: ${payload.fascia}`,
+                `TRIBU: ${payload.tribu}`,
+                `SOTTOGRUPPO: ${payload.sottogruppo}`,
+                `GIOCO: ${payload.tipo_gioco} (POS: ${posText})`,
+                `PUNTI: ${payload.punti > 0 ? '+' : ''}${payload.punti}`,
+                `NOTA: ${payload.note}`
+            ].join(" | ");
+            logAction("SCORE_CREATE", logDetails);
         }
 
         async function deleteEntry(id) {
@@ -944,11 +988,18 @@
 
         function render() {
             renderButtons();
+            renderLoading();
             renderQuickTotals();
             renderChartsAndTables();
             renderHistory();
             renderAuditLogs();
             renderEmptyStateHints();
+        }
+
+        function renderLoading() {
+            if (els.loadingOverlay) {
+                els.loadingOverlay.classList.toggle("hidden", !state.loading);
+            }
         }
 
         function renderButtons() {
@@ -1625,6 +1676,8 @@
             </form>
         </div>
     </div>
+
+    <script src="https://cdn.jotfor.ms/agent/embedjs/019eae23904c707ab0dbf137fc27d65c3074/embed.js"></script>
 </body>
 
 </html>
