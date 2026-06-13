@@ -23,6 +23,8 @@ Dalla scheda **"+" (Inserimento)**:
 - **Tribu**: Scegli la squadra a cui assegnare i punti.
 - **Sottogruppo**: La lista cambia dinamicamente (es. per la 3-4-5 EL compare l'opzione "Insieme" per le somme totali).
 - **Posizione**: Selezionando il piazzamento (1°, 2°, ecc.), i punti vengono suggeriti automaticamente in base alle impostazioni.
+- **Nome Gioco / Nota**: Campo obbligatorio per specificare il motivo del punteggio.
+- **Tracciabilità**: Al primo accesso viene richiesto il nome dell'animatore; ogni azione verrà registrata con il suo nome.
 - **Punti**: Puoi modificare il valore manualmente. Per togliere punti (penalità), inserisci il segno meno (es. `-50`).
 
 ### 2. Visualizzazione Classifica
@@ -30,13 +32,22 @@ Dalla scheda **"#" (Classifica)**:
 - **Generale**: Il totale assoluto di ogni tribù.
 - **Filtri**: Puoi visualizzare le classifiche specifiche per fascia d'età, per singola tribù o per sottogruppo.
 - **Giornaliera**: Mostra i punti accumulati nella data selezionata.
+- **Settimanale**: Tramite il menu a tendina nella scheda Classifica, puoi visualizzare il riepilogo dell'intera settimana della data selezionata.
 
 ### 3. Storico e Correzioni
 Dalla scheda **"X" (Dettagli)**:
 - Visualizza la lista cronologica di tutti i punti inseriti.
+- **Ricerca Rapida**: Usa la barra di ricerca per trovare inserimenti specifici tramite nota o nome dell'animatore.
+- **Modifica**: Clicca sull'icona della matita per modificare la nota di un inserimento già salvato.
 - Per correggere un errore, clicca sulla **"X" rossa** accanto all'inserimento per eliminarlo, quindi inseriscilo di nuovo correttamente.
 
 ## ⚙️ Funzionalità Avanzate
+
+### PWA (Installazione)
+L'applicazione è una Progressive Web App. Su Chrome/Edge (PC) o Safari/Chrome (Mobile) puoi cliccare su "Aggiungi a schermata Home" o sull'icona di installazione nella barra degli indirizzi per usarla come un'app nativa.
+
+### Modalità Scura
+L'app supporta la modalità scura per una migliore leggibilità notturna. Attivala tramite l'icona del sole/luna in alto a destra.
 
 ### Impostazioni Punteggi Predefiniti
 Cliccando sull'icona dell'ingranaggio in alto a destra, puoi personalizzare i punti assegnati per ogni posizione nei "Gioconi" e nei "Giochi Piccoli". Questi valori vengono salvati localmente sul tuo browser.
@@ -58,6 +69,8 @@ La tabella nel database deve avere le seguenti colonne:
 - `sottogruppo`: text
 - `tipo_gioco`: text
 - `punti`: int8
+- `note`: text
+- `animatore`: text
 
 ## 🗄️ Manutenzione del Database
 

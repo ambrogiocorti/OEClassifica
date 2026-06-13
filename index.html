@@ -5,9 +5,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Classifica BellaFrà</title>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0284c7">
+    <link rel="apple-touch-icon" href="https://img.icons8.com/parakeet/192/leaderboard.png">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <link rel="shortcut icon" href="https://img.icons8.com/parakeet/48/leaderboard.png" type="image/x-icon">
     <script>
         window.tailwind = window.tailwind || {};
@@ -22,20 +26,31 @@
                     },
                 },
             },
+            darkMode: 'class',
         };
     </script>
 </head>
 
-<body class="min-h-screen bg-slate-50 text-slate-900 antialiased">
+<body class="min-h-screen bg-slate-50 text-slate-900 antialiased transition-colors duration-300 dark:bg-slate-950 dark:text-slate-100">
     <div class="mx-auto min-h-screen w-full max-w-5xl pb-28">
-        <header class="sticky top-0 z-30 border-b border-slate-200 bg-white/95 px-4 py-4 backdrop-blur">
+        <header class="sticky top-0 z-30 border-b border-slate-200 bg-white/95 px-4 py-4 backdrop-blur dark:border-slate-800 dark:bg-slate-900/95">
             <div class="flex items-center justify-between gap-3">
                 <div>
                     <p class="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">OE 2026 - BELLA FRà</p>
-                    <h1 class="text-xl font-black text-slate-950 sm:text-2xl">Classifica tribu</h1>
+                    <h1 class="text-xl font-black text-slate-950 dark:text-white sm:text-2xl">Classifica tribu</h1>
                 </div>
 
                 <div class="flex items-center gap-3">
+                    <button id="darkToggle" class="p-2 text-slate-400 hover:text-sky-600 transition" title="Cambia tema">
+                        <svg id="sunIcon" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707M16.071 16.071l.707.707M7.657 7.657l.707.707M12 8a4 4 0 100 8 4 4 0 000-8z" /></svg>
+                        <svg id="moonIcon" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" /></svg>
+                    </button>
+                    <button id="goToAudit" class="text-[10px] font-bold uppercase tracking-wider text-slate-400 hover:text-sky-600 transition">
+                        Registro Log
+                    </button>
+                    <button id="changeAnimatore" class="text-[10px] font-bold uppercase tracking-wider text-slate-400 hover:text-sky-600 transition">
+                        Cambia Utente
+                    </button>
                     <button id="openSettings" class="p-2 text-slate-400 hover:text-slate-900 transition">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
@@ -51,17 +66,17 @@
             <section id="alertBox" class="mb-4 hidden rounded-lg border px-4 py-3 text-sm font-medium"></section>
 
             <section id="tab-inserimento" class="tab-panel space-y-5">
-                <div class="rounded-lg border border-slate-200 bg-white p-4 shadow-soft">
+                <div class="rounded-lg border border-slate-200 bg-white p-4 shadow-soft dark:border-slate-800 dark:bg-slate-900">
                     <div class="mb-5">
-                        <h2 class="text-lg font-black text-slate-950">Nuovo punteggio</h2>
+                        <h2 class="text-lg font-black text-slate-950 dark:text-white">Nuovo punteggio</h2>
                         <p class="mt-1 text-sm text-slate-500">Inserisci il risultato e salvalo.</p>
                     </div>
 
                     <form id="scoreForm" class="space-y-4">
                         <div class="grid gap-4 sm:grid-cols-3">
                             <label class="block">
-                                <span class="mb-2 block text-sm font-bold text-slate-700">Fascia</span>
-                                <select id="fasciaInput" class="h-12 w-full rounded-lg border border-slate-300 bg-white px-3 text-base font-semibold outline-none transition focus:border-sky-500 focus:ring-4 focus:ring-sky-100">
+                                <span class="mb-2 block text-sm font-bold text-slate-700 dark:text-slate-300">Fascia</span>
+                                <select id="fasciaInput" class="h-12 w-full rounded-lg border border-slate-300 bg-white px-3 text-base font-semibold outline-none transition focus:border-sky-500 focus:ring-4 focus:ring-sky-100 dark:bg-slate-800 dark:border-slate-700 dark:text-white">
                                     <option value="1-2 EL">1-2 EL</option>
                                     <option value="3-4-5 EL">3-4-5 EL</option>
                                     <option value="Medie">Medie</option>
@@ -69,8 +84,8 @@
                             </label>
 
                             <label class="block">
-                                <span class="mb-2 block text-sm font-bold text-slate-700">Tribu</span>
-                                <select id="tribuInput" class="h-12 w-full rounded-lg border border-slate-300 bg-white px-3 text-base font-semibold outline-none transition focus:border-sky-500 focus:ring-4 focus:ring-sky-100">
+                                <span class="mb-2 block text-sm font-bold text-slate-700 dark:text-slate-300">Tribu</span>
+                                <select id="tribuInput" class="h-12 w-full rounded-lg border border-slate-300 bg-white px-3 text-base font-semibold outline-none transition focus:border-sky-500 focus:ring-4 focus:ring-sky-100 dark:bg-slate-800 dark:border-slate-700 dark:text-white">
                                     <option value="Rossi">Rossi</option>
                                     <option value="Verdi">Verdi</option>
                                     <option value="Blu">Blu</option>
@@ -79,8 +94,8 @@
                             </label>
 
                             <label class="block">
-                                <span class="mb-2 block text-sm font-bold text-slate-700">Sottogruppo</span>
-                                <select id="sottogruppoInput" class="h-12 w-full rounded-lg border border-slate-300 bg-white px-3 text-base font-semibold outline-none transition focus:border-sky-500 focus:ring-4 focus:ring-sky-100">
+                                <span class="mb-2 block text-sm font-bold text-slate-700 dark:text-slate-300">Sottogruppo</span>
+                                <select id="sottogruppoInput" class="h-12 w-full rounded-lg border border-slate-300 bg-white px-3 text-base font-semibold outline-none transition focus:border-sky-500 focus:ring-4 focus:ring-sky-100 dark:bg-slate-800 dark:border-slate-700 dark:text-white">
                                     <option value="Maschi">Maschi</option>
                                     <option value="Femmine">Femmine</option>
                                     <option value="Unico">Unico</option>
@@ -90,16 +105,16 @@
 
                         <div class="grid gap-4 sm:grid-cols-3">
                             <label class="block">
-                                <span class="mb-2 block text-sm font-bold text-slate-700">Tipo gioco</span>
-                                <select id="tipoGiocoInput" class="h-12 w-full rounded-lg border border-slate-300 bg-white px-3 text-base font-semibold outline-none transition focus:border-sky-500 focus:ring-4 focus:ring-sky-100">
+                                <span class="mb-2 block text-sm font-bold text-slate-700 dark:text-slate-300">Tipo gioco</span>
+                                <select id="tipoGiocoInput" class="h-12 w-full rounded-lg border border-slate-300 bg-white px-3 text-base font-semibold outline-none transition focus:border-sky-500 focus:ring-4 focus:ring-sky-100 dark:bg-slate-800 dark:border-slate-700 dark:text-white">
                                     <option value="Giocone">Giocone</option>
                                     <option value="Piccolo">Piccolo</option>
                                 </select>
                             </label>
 
                             <label class="block">
-                                <span class="mb-2 block text-sm font-bold text-slate-700">Posizione</span>
-                                <select id="posizioneInput" class="h-12 w-full rounded-lg border border-slate-300 bg-white px-3 text-base font-semibold outline-none transition focus:border-sky-500 focus:ring-4 focus:ring-sky-100">
+                                <span class="mb-2 block text-sm font-bold text-slate-700 dark:text-slate-300">Posizione</span>
+                                <select id="posizioneInput" class="h-12 w-full rounded-lg border border-slate-300 bg-white px-3 text-base font-semibold outline-none transition focus:border-sky-500 focus:ring-4 focus:ring-sky-100 dark:bg-slate-800 dark:border-slate-700 dark:text-white">
                                     <option value="0">Seleziona...</option>
                                     <option value="1">1° Posto</option>
                                     <option value="2">2° Posto</option>
@@ -109,10 +124,15 @@
                             </label>
 
                             <label class="block">
-                                <span class="mb-2 block text-sm font-bold text-slate-700">Punti</span>
-                                <input id="puntiInput" type="number" step="1" value="0" class="h-12 w-full rounded-lg border border-slate-300 bg-white px-3 text-lg font-black outline-none transition focus:border-sky-500 focus:ring-4 focus:ring-sky-100">
+                                <span class="mb-2 block text-sm font-bold text-slate-700 dark:text-slate-300">Punti</span>
+                                <input id="puntiInput" type="number" step="1" value="0" class="h-12 w-full rounded-lg border border-slate-300 bg-white px-3 text-lg font-black outline-none transition focus:border-sky-500 focus:ring-4 focus:ring-sky-100 dark:bg-slate-800 dark:border-slate-700 dark:text-white">
                             </label>
                         </div>
+
+                        <label class="block">
+                            <span class="mb-2 block text-sm font-bold text-slate-700 dark:text-slate-300">Nome Gioco / Nota</span>
+                            <input id="noteInput" type="text" required placeholder="Es: Staffetta, Quiz, Penalità comportamento..." class="h-12 w-full rounded-lg border border-slate-300 bg-white px-3 text-base font-medium outline-none transition focus:border-sky-500 focus:ring-4 focus:ring-sky-100 dark:bg-slate-800 dark:border-slate-700 dark:text-white">
+                        </label>
 
                         <button id="saveButton" type="submit" class="flex h-14 w-full items-center justify-center rounded-lg bg-sky-600 px-5 text-base font-black text-white shadow-lg shadow-sky-200 transition active:scale-[0.99] disabled:cursor-not-allowed disabled:bg-slate-300 disabled:shadow-none">
                             Salva punti
@@ -120,7 +140,7 @@
                     </form>
                 </div>
 
-                <div class="rounded-lg border border-slate-200 bg-white p-4">
+                <div class="rounded-lg border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-900">
                     <h3 class="text-sm font-black uppercase tracking-wide text-slate-500">Classifica generale</h3>
                     <div id="quickTotals" class="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-4"></div>
                 </div>
@@ -128,12 +148,12 @@
 
             <section id="tab-classifica" class="tab-panel hidden space-y-5">
                 <div class="grid gap-4 lg:grid-cols-2">
-                    <article class="rounded-lg border border-slate-200 bg-white p-4 shadow-soft">
+                    <article class="rounded-lg border border-slate-200 bg-white p-4 shadow-soft dark:border-slate-800 dark:bg-slate-900">
                         <div class="mb-4 flex items-start justify-between gap-3">
                             <div>
-                                <h2 class="text-lg font-black text-slate-950">Classifica generale</h2>
+                                <h2 class="text-lg font-black text-slate-950 dark:text-white">Classifica generale</h2>
                             </div>
-                            <span id="totalEntriesBadge" class="rounded-full bg-slate-100 px-3 py-1 text-xs font-bold text-slate-600">0 record</span>
+                            <span id="totalEntriesBadge" class="rounded-full bg-slate-100 px-3 py-1 text-xs font-bold text-slate-600 dark:bg-slate-800">0 record</span>
                         </div>
                         <div class="h-72">
                             <canvas id="overallChart"></canvas>
@@ -141,11 +161,11 @@
                         <div id="overallTable" class="mt-4 overflow-hidden rounded-lg border border-slate-200"></div>
                     </article>
 
-                    <article class="rounded-lg border border-slate-200 bg-white p-4 shadow-soft">
+                    <article class="rounded-lg border border-slate-200 bg-white p-4 shadow-soft dark:border-slate-800 dark:bg-slate-900">
                         <div class="mb-4">
-                            <h2 class="text-lg font-black text-slate-950">Classifica per fascia</h2>
+                            <h2 class="text-lg font-black text-slate-950 dark:text-white">Classifica per fascia</h2>
                         </div>
-                        <select id="fasciaFilter" class="mb-4 h-11 w-full rounded-lg border border-slate-300 bg-white px-3 text-sm font-bold outline-none focus:border-sky-500 focus:ring-4 focus:ring-sky-100">
+                        <select id="fasciaFilter" class="mb-4 h-11 w-full rounded-lg border border-slate-300 bg-white px-3 text-sm font-bold outline-none focus:border-sky-500 focus:ring-4 focus:ring-sky-100 dark:bg-slate-800 dark:border-slate-700">
                             <option value="Tutte">Tutte le fasce</option>
                             <option value="1-2 EL">1-2 EL</option>
                             <option value="3-4-5 EL">3-4-5 EL</option>
@@ -159,11 +179,11 @@
                 </div>
 
                 <div class="grid gap-4 lg:grid-cols-2">
-                    <article class="rounded-lg border border-slate-200 bg-white p-4 shadow-soft">
+                    <article class="rounded-lg border border-slate-200 bg-white p-4 shadow-soft dark:border-slate-800 dark:bg-slate-900">
                         <div class="mb-4">
-                            <h2 class="text-lg font-black text-slate-950">Dettaglio tribu</h2>
+                            <h2 class="text-lg font-black text-slate-950 dark:text-white">Dettaglio tribu</h2>
                         </div>
-                        <select id="tribuFilter" class="mb-4 h-11 w-full rounded-lg border border-slate-300 bg-white px-3 text-sm font-bold outline-none focus:border-sky-500 focus:ring-4 focus:ring-sky-100">
+                        <select id="tribuFilter" class="mb-4 h-11 w-full rounded-lg border border-slate-300 bg-white px-3 text-sm font-bold outline-none focus:border-sky-500 focus:ring-4 focus:ring-sky-100 dark:bg-slate-800 dark:border-slate-700">
                             <option value="Rossi">Rossi</option>
                             <option value="Verdi">Verdi</option>
                             <option value="Blu">Blu</option>
@@ -175,11 +195,11 @@
                         <div id="tribuDetailTable" class="mt-4 overflow-hidden rounded-lg border border-slate-200"></div>
                     </article>
 
-                    <article class="rounded-lg border border-slate-200 bg-white p-4 shadow-soft">
+                    <article class="rounded-lg border border-slate-200 bg-white p-4 shadow-soft dark:border-slate-800 dark:bg-slate-900">
                         <div class="mb-4">
-                            <h2 class="text-lg font-black text-slate-950">Sottogruppi</h2>
+                            <h2 class="text-lg font-black text-slate-950 dark:text-white">Sottogruppi</h2>
                         </div>
-                        <select id="subgroupFilter" class="mb-4 h-11 w-full rounded-lg border border-slate-300 bg-white px-3 text-sm font-bold outline-none focus:border-sky-500 focus:ring-4 focus:ring-sky-100">
+                        <select id="subgroupFilter" class="mb-4 h-11 w-full rounded-lg border border-slate-300 bg-white px-3 text-sm font-bold outline-none focus:border-sky-500 focus:ring-4 focus:ring-sky-100 dark:bg-slate-800 dark:border-slate-700">
                             <option value="Tutti">Tutti i sottogruppi</option>
                             <option value="Maschi">Maschi</option>
                             <option value="Femmine">Femmine</option>
@@ -192,12 +212,18 @@
                     </article>
                 </div>
 
-                <article class="rounded-lg border border-slate-200 bg-white p-4 shadow-soft">
+                <article id="report-content" class="rounded-lg border border-slate-200 bg-white p-4 shadow-soft dark:border-slate-800 dark:bg-slate-900">
                     <div class="mb-4 grid gap-3 sm:grid-cols-[1fr_auto] sm:items-end">
                         <div>
-                            <h2 class="text-lg font-black text-slate-950">Classifica giornaliera</h2>
+                            <h2 id="dailyTitle" class="text-lg font-black text-slate-950 dark:text-white">Classifica giornaliera</h2>
                         </div>
-                        <input id="dateFilter" type="date" class="h-11 rounded-lg border border-slate-300 bg-white px-3 text-sm font-bold outline-none focus:border-sky-500 focus:ring-4 focus:ring-sky-100">
+                        <div class="flex gap-2">
+                            <select id="viewTypeFilter" class="h-11 rounded-lg border border-slate-300 bg-white px-3 text-sm font-bold outline-none focus:border-sky-500 dark:bg-slate-800 dark:border-slate-700">
+                                <option value="day">Giorno</option>
+                                <option value="week">Settimana</option>
+                            </select>
+                            <input id="dateFilter" type="date" class="h-11 rounded-lg border border-slate-300 bg-white px-3 text-sm font-bold outline-none focus:border-sky-500 dark:bg-slate-800 dark:border-slate-700">
+                        </div>
                     </div>
                     <div class="h-72">
                         <canvas id="dailyChart"></canvas>
@@ -206,26 +232,40 @@
                 </article>
             </section>
 
-            <section id="tab-dettagli" class="tab-panel hidden space-y-5">
-                <div class="rounded-lg border border-slate-200 bg-white p-4 shadow-soft">
-                    <div class="mb-4 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+            <section id="tab-dettagli" class="tab-panel hidden space-y-4">
+                <div class="rounded-lg border border-slate-200 bg-white p-4 shadow-soft dark:border-slate-800 dark:bg-slate-900">
+                    <div class="mb-4 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                         <div>
-                            <h2 class="text-lg font-black text-slate-950">Dettagli e storico</h2>
+                            <h2 class="text-lg font-black text-slate-950 dark:text-white">Dettagli e storico</h2>
                             <p class="text-sm text-slate-500">Tutti gli inserimenti, dal piu recente al piu vecchio.</p>
                         </div>
-                        <button id="refreshButton" type="button" class="h-11 rounded-lg border border-slate-300 px-4 text-sm font-black text-slate-700 transition active:scale-[0.99]">
-                            Aggiorna
-                        </button>
+                        <div class="flex gap-2">
+                            <input id="historySearch" type="text" placeholder="Cerca nota o animatore..." class="h-11 flex-1 rounded-lg border border-slate-300 px-3 text-sm outline-none focus:border-sky-500 dark:bg-slate-800 dark:border-slate-700">
+                            <button id="refreshButton" type="button" class="h-11 rounded-lg border border-slate-300 px-4 text-sm font-black text-slate-700 transition active:scale-[0.99] dark:text-slate-300 dark:border-slate-700">
+                                Aggiorna
+                            </button>
+                        </div>
                     </div>
                     <div id="historyTable" class="overflow-hidden rounded-lg border border-slate-200"></div>
+                </div>
+            </section>
+
+            <section id="tab-audit" class="tab-panel hidden space-y-5">
+                <div class="rounded-lg border border-slate-200 bg-white p-4 shadow-soft dark:border-slate-800 dark:bg-slate-900">
+                    <div class="mb-4 flex items-center justify-between">
+                        <h2 class="text-lg font-black text-slate-950 dark:text-white">Registro Audit</h2>
+                        <button id="exportAudit" class="rounded-lg bg-slate-100 px-3 py-1 text-xs font-bold text-slate-600 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-300">Esporta Log</button>
+                    </div>
+                    <p class="mb-4 text-sm text-slate-500">Tracciamento completo delle operazioni di sistema (ultimi 100 eventi).</p>
+                    <div id="auditTable" class="overflow-x-auto rounded-lg border border-slate-200"></div>
                 </div>
             </section>
         </main>
     </div>
 
-    <nav class="fixed inset-x-0 bottom-0 z-40 border-t border-slate-200 bg-white/95 px-3 py-2 shadow-[0_-12px_35px_rgba(15,23,42,0.08)] backdrop-blur">
+    <nav class="fixed inset-x-0 bottom-0 z-40 border-t border-slate-200 bg-white/95 px-3 py-2 shadow-[0_-12px_35px_rgba(15,23,42,0.08)] backdrop-blur dark:bg-slate-900/95 dark:border-slate-800">
         <div class="mx-auto grid max-w-2xl grid-cols-3 gap-2">
-            <button type="button" data-tab="inserimento" class="nav-button rounded-lg px-2 py-3 text-center text-xs font-black text-sky-700 transition">
+            <button type="button" data-tab="inserimento" class="nav-button rounded-lg px-2 py-3 text-center text-xs font-black text-sky-700 transition dark:text-sky-400">
                 <span class="block text-lg leading-none">+</span>
                 Inserimento
             </button>
@@ -237,7 +277,8 @@
                 <span class="block text-lg leading-none">X</span>
                 Dettagli
             </button>
-            <script src='https://cdn.jotfor.ms/agent/embedjs/019eae23904c707ab0dbf137fc27d65c3074/embed.js'></script>
+            <script src='https://cdn.jotfor.ms/agent/embedjs/019eae23904c707ab0dbf137fc27d65c3074/embed.js'>
+</script>
         </div>
     </nav>
 
@@ -255,28 +296,28 @@
                 border: "rgb(220, 38, 38)",
                 text: "text-red-700",
                 bg: "bg-red-50",
-                ring: "ring-red-100",
+                ring: "ring-red-100"
             },
             Verdi: {
                 bar: "rgba(74, 222, 128, 0.85)",
                 border: "rgb(22, 163, 74)",
                 text: "text-green-700",
                 bg: "bg-green-50",
-                ring: "ring-green-100",
+                ring: "ring-green-100"
             },
             Blu: {
                 bar: "rgba(96, 165, 250, 0.85)",
                 border: "rgb(37, 99, 235)",
                 text: "text-blue-700",
                 bg: "bg-blue-50",
-                ring: "ring-blue-100",
+                ring: "ring-blue-100"
             },
             Gialli: {
                 bar: "rgba(250, 204, 21, 0.9)",
                 border: "rgb(202, 138, 4)",
                 text: "text-yellow-700",
                 bg: "bg-yellow-50",
-                ring: "ring-yellow-100",
+                ring: "ring-yellow-100"
             },
         };
 
@@ -287,11 +328,16 @@
             selectedTribu: "Rossi",
             selectedSubgroup: "Tutti",
             selectedDate: toLocalDateInputValue(new Date()),
+            viewType: "day",
             loading: false,
             saving: false,
             deletingIds: new Set(),
             realtimeStatus: "disconnected",
             client: null,
+            animatore: localStorage.getItem("animatore_nome") || null,
+            auditAuthenticated: false,
+            auditLogs: [],
+            historySearchQuery: ""
         };
 
         const charts = {
@@ -337,6 +383,17 @@
         }
 
         function init() {
+            // Registrazione Service Worker per PWA
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('sw.js').catch(() => {});
+            }
+
+            // Setup Dark Mode
+            if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark');
+                updateDarkToggleIcons(true);
+            }
+
             bindElements();
             bindEvents();
             els.dateFilter.value = state.selectedDate;
@@ -349,6 +406,12 @@
                 setAlert("warning", "Inserisci supabaseUrl e supabaseKey nel file per collegare il database.");
                 updateConnectionStatus("Setup richiesto", "bg-amber-100 text-amber-700");
                 return;
+            }
+
+            checkAnimatore();
+            // Se l'animatore è già loggato tramite localStorage, logghiamo la nuova sessione
+            if (state.animatore) {
+                logAction("AUTH_SESSION_RESUME", `Sessione ripristinata per l'utente: ${state.animatore}`);
             }
 
             loadEntries();
@@ -381,16 +444,23 @@
             els.scoreForm = document.getElementById("scoreForm");
             els.saveButton = document.getElementById("saveButton");
             els.refreshButton = document.getElementById("refreshButton");
+            els.changeAnimatore = document.getElementById("changeAnimatore");
+            els.darkToggle = document.getElementById("darkToggle");
+            els.sunIcon = document.getElementById("sunIcon");
+            els.moonIcon = document.getElementById("moonIcon");
             els.fasciaInput = document.getElementById("fasciaInput");
             els.tribuInput = document.getElementById("tribuInput");
             els.sottogruppoInput = document.getElementById("sottogruppoInput");
             els.tipoGiocoInput = document.getElementById("tipoGiocoInput");
             els.posizioneInput = document.getElementById("posizioneInput"); // Assicurati che sia qui
             els.puntiInput = document.getElementById("puntiInput");
+            els.noteInput = document.getElementById("noteInput");
+            els.historySearch = document.getElementById("historySearch");
             els.fasciaFilter = document.getElementById("fasciaFilter");
             els.tribuFilter = document.getElementById("tribuFilter");
             els.subgroupFilter = document.getElementById("subgroupFilter");
             els.dateFilter = document.getElementById("dateFilter");
+            els.viewTypeFilter = document.getElementById("viewTypeFilter");
             els.quickTotals = document.getElementById("quickTotals");
             els.totalEntriesBadge = document.getElementById("totalEntriesBadge");
             els.overallTable = document.getElementById("overallTable");
@@ -399,6 +469,10 @@
             els.subgroupTable = document.getElementById("subgroupTable");
             els.dailyTable = document.getElementById("dailyTable");
             els.historyTable = document.getElementById("historyTable");
+            els.auditTable = document.getElementById("auditTable");
+            els.loginModal = document.getElementById("loginModal");
+            els.loginForm = document.getElementById("loginForm");
+            els.animatoreInput = document.getElementById("animatoreInput");
         }
 
         function bindEvents() {
@@ -416,6 +490,11 @@
 
             els.scoreForm.addEventListener("submit", handleSubmit);
             els.refreshButton.addEventListener("click", loadEntries);
+
+            els.historySearch.addEventListener("input", (e) => {
+                state.historySearchQuery = e.target.value.toLowerCase();
+                renderHistory();
+            });
 
             els.fasciaFilter.addEventListener("change", (event) => {
                 state.selectedFascia = event.target.value;
@@ -441,6 +520,75 @@
                 state.selectedDate = event.target.value || toLocalDateInputValue(new Date());
                 render();
             });
+
+            els.viewTypeFilter.addEventListener("change", (event) => {
+                state.viewType = event.target.value;
+                render();
+            });
+
+            if (els.loginForm) {
+                els.loginForm.addEventListener("submit", (e) => {
+                    e.preventDefault();
+                    const nome = els.animatoreInput.value.trim();
+                    if (nome) {
+                        state.animatore = nome;
+                        localStorage.setItem("animatore_nome", nome);
+                        els.loginModal.classList.add("hidden");
+                        logAction("AUTH_LOGIN", `Accesso effettuato correttamente da: ${nome}`);
+                        setAlert("success", `Benvenuto, ${nome}!`);
+                    }
+                });
+            }
+
+            if (els.changeAnimatore) {
+                els.changeAnimatore.addEventListener("click", () => {
+                    if (confirm("Vuoi cambiare animatore? Verrai disconnesso da questa sessione.")) {
+                        localStorage.removeItem("animatore_nome");
+                        location.reload();
+                    }
+                });
+            }
+
+            if (els.darkToggle) {
+                els.darkToggle.addEventListener("click", () => {
+                    const isDark = document.documentElement.classList.toggle('dark');
+                    localStorage.setItem('theme', isDark ? 'dark' : 'light');
+                    updateDarkToggleIcons(isDark);
+                    // Rerender charts to update colors
+                    initCharts();
+                    render();
+                });
+            }
+        }
+
+        function updateDarkToggleIcons(isDark) {
+            if (isDark) {
+                els.sunIcon.classList.remove("hidden");
+                els.moonIcon.classList.add("hidden");
+            } else {
+                els.sunIcon.classList.add("hidden");
+                els.moonIcon.classList.remove("hidden");
+            }
+        }
+
+        function checkAnimatore() {
+            if (!state.animatore && els.loginModal) {
+                els.loginModal.classList.remove("hidden");
+            }
+        }
+
+        async function logAction(azione, dettagli = "") {
+            if (!state.client || !state.animatore) return;
+            try {
+                const { error } = await state.client.from('log_azioni').insert({
+                    animatore: state.animatore,
+                    azione: azione,
+                    dettagli: dettagli
+                });
+                if (error) {
+                    console.error("Errore salvataggio log su Supabase:", error.message);
+                }
+            } catch (e) { console.error("Log error:", e); }
         }
 
         function maybeCreateSupabaseClient() {
@@ -553,12 +701,27 @@
                 return;
             }
 
+            if (Math.abs(points) > 1000) {
+                setAlert("error", "Punteggio troppo elevato. Inserisci un valore realistico (max 1000).");
+                els.puntiInput.focus();
+                return;
+            }
+
+            const note = els.noteInput.value.trim();
+            if (!note) {
+                setAlert("warning", "Il campo Nome Gioco / Nota è obbligatorio.");
+                els.noteInput.focus();
+                return;
+            }
+
             const payload = {
                 fascia: els.fasciaInput.value,
                 tribu: els.tribuInput.value,
                 sottogruppo: els.sottogruppoInput.value,
                 tipo_gioco: els.tipoGiocoInput.value,
                 punti: points,
+                note: note,
+                animatore: state.animatore
             };
 
             state.saving = true;
@@ -584,7 +747,22 @@
                 }
 
                 setAlert("success", "Punteggio salvato.");
+                
+                // Generazione log professionale e strutturato
+                const posText = els.posizioneInput.value !== "0" ? `${els.posizioneInput.value}°` : "NON_SPECIF.";
+                const logDetails = [
+                    `[SCORE_ENTRY]`,
+                    `FASCIA: ${payload.fascia}`,
+                    `TRIBU: ${payload.tribu}`,
+                    `SOTTOGRUPPO: ${payload.sottogruppo}`,
+                    `GIOCO: ${payload.tipo_gioco} (POS: ${posText})`,
+                    `PUNTI: ${payload.punti > 0 ? '+' : ''}${payload.punti}`,
+                    `NOTA: ${payload.note}`
+                ].join(" | ");
+                
+                logAction("SCORE_CREATE", logDetails);
                 els.scoreForm.reset();
+                updateFormOptions();
                 suggestPresetPoints();
                 render();
             } catch (error) {
@@ -622,6 +800,16 @@
                 }
 
                 state.entries = state.entries.filter((item) => String(item.id) !== String(id));
+                
+                const logDetails = [
+                    `[SCORE_REMOVAL]`,
+                    `TRIBU: ${entry?.tribu}`,
+                    `PUNTI: ${entry?.punti}`,
+                    `NOTA: ${entry?.note}`,
+                    `ID_RECORD: ${id}`
+                ].join(" | ");
+                
+                logAction("SCORE_DELETE", logDetails);
                 setAlert("success", "Inserimento eliminato.");
             } catch (error) {
                 console.error("Errore eliminazione punteggio:", error);
@@ -632,7 +820,66 @@
             }
         }
 
+        async function editNote(id) {
+            if (!state.client) {
+                setAlert("warning", "Configura Supabase prima di modificare i dati.");
+                return;
+            }
+
+            const entry = state.entries.find((item) => String(item.id) === String(id));
+            if (!entry) return;
+
+            const oldNote = entry.note;
+            const newNote = window.prompt("Modifica la nota per questo punteggio:", oldNote);
+            
+            if (newNote === null || newNote.trim() === oldNote) {
+                return;
+            }
+
+            if (newNote.trim() === "") {
+                setAlert("warning", "La nota non può essere vuota.");
+                return;
+            }
+
+            try {
+                const { error } = await state.client
+                    .from("punteggi")
+                    .update({ note: newNote.trim() })
+                    .eq("id", id);
+
+                if (error) throw error;
+
+                // Update local state
+                entry.note = newNote.trim();
+                
+                const logDetails = [
+                    `[NOTE_UPDATE]`,
+                    `TRIBU: ${entry.tribu}`,
+                    `VECCHIA_NOTA: ${oldNote}`,
+                    `NUOVA_NOTA: ${newNote.trim()}`,
+                    `ID_RECORD: ${id}`
+                ].join(" | ");
+                
+                logAction("SCORE_UPDATE", logDetails);
+                setAlert("success", "Nota aggiornata con successo.");
+                render();
+            } catch (error) {
+                console.error("Errore modifica nota:", error);
+                setAlert("error", readableSupabaseError(error, "Impossibile modificare la nota."));
+            }
+        }
+
         function setActiveTab(tabName) {
+            if (tabName === "audit" && !state.auditAuthenticated) {
+                const pwd = prompt("Area riservata ai responsabili. Inserisci la password:");
+                if (pwd === "@Ginoc.bro008") {
+                    state.auditAuthenticated = true;
+                } else {
+                    if (pwd !== null) alert("Accesso negato.");
+                    return;
+                }
+            }
+
             state.activeTab = tabName;
 
             document.querySelectorAll(".tab-panel").forEach((panel) => {
@@ -641,7 +888,8 @@
 
             document.querySelectorAll(".nav-button").forEach((button) => {
                 const isActive = button.dataset.tab === tabName;
-                button.classList.toggle("bg-sky-50", isActive);
+                button.classList.toggle("bg-sky-50", isActive && !document.documentElement.classList.contains('dark'));
+                button.classList.toggle("dark:bg-sky-900/30", isActive && document.documentElement.classList.contains('dark'));
                 button.classList.toggle("text-sky-700", isActive);
                 button.classList.toggle("text-slate-500", !isActive);
             });
@@ -649,6 +897,29 @@
             requestAnimationFrame(() => {
                 Object.values(charts).forEach((chart) => chart && chart.resize());
             });
+
+            if (tabName === "audit") loadAuditLogs();
+        }
+
+        async function loadAuditLogs() {
+            if (!state.client || !state.auditAuthenticated) return;
+            state.loading = true;
+            render();
+            try {
+                const { data, error } = await state.client
+                    .from('log_azioni')
+                    .select('*')
+                    .order('created_at', { ascending: false })
+                    .limit(100);
+                if (error) throw error;
+                state.auditLogs = data || [];
+            } catch (e) {
+                console.error("Errore audit:", e);
+                setAlert("error", "Errore caricamento registro audit.");
+            } finally {
+                state.loading = false;
+                render();
+            }
         }
 
         function suggestPresetPoints() {
@@ -684,6 +955,7 @@
             renderQuickTotals();
             renderChartsAndTables();
             renderHistory();
+            renderAuditLogs();
             renderEmptyStateHints();
         }
 
@@ -699,9 +971,11 @@
             els.quickTotals.innerHTML = TRIBES.map((tribe) => {
                 const colors = TRIBE_COLORS[tribe];
                 return `
-                    <div class="${colors.bg} ${colors.text} rounded-lg p-3 ring-1 ${colors.ring}">
-                        <p class="text-xs font-black uppercase tracking-wide">${tribe}</p>
-                        <p class="mt-1 text-2xl font-black">${formatNumber(totals[tribe])}</p>
+                    <div class="${colors.bg} ${colors.text} dark:bg-slate-800/50 rounded-lg p-3 ring-1 ${colors.ring} dark:ring-slate-700">
+                        <div class="flex justify-between items-start">
+                            <p class="text-xs font-black uppercase tracking-wide">${tribe}</p>
+                        </div>
+                        <p class="mt-1 text-2xl font-black dark:text-white">${formatNumber(totals[tribe])}</p>
                     </div>
                 `;
             }).join("");
@@ -709,6 +983,7 @@
 
         function renderChartsAndTables() {
             const overallRows = rankingRows(totalsByTribe(state.entries));
+            
             updateHorizontalBarChart(charts.overall, TRIBES, TRIBES.map((tribe) => overallRows.find((row) => row.name === tribe)?.points || 0), "Punti totali");
             els.overallTable.innerHTML = rankingTable(overallRows);
             els.totalEntriesBadge.textContent = `${state.entries.length} ${state.entries.length === 1 ? "record" : "record"}`;
@@ -733,7 +1008,25 @@
             updateHorizontalBarChart(charts.subgroup, TRIBES, TRIBES.map((tribe) => subgroupRows.find((row) => row.name === tribe)?.points || 0), "Punti sottogruppo");
             els.subgroupTable.innerHTML = rankingTable(subgroupRows);
 
-            const dailyEntries = state.entries.filter((entry) => toLocalDateInputValue(new Date(entry.created_at)) === state.selectedDate);
+            let dailyEntries = [];
+            if (state.viewType === "day") {
+                dailyEntries = state.entries.filter((entry) => toLocalDateInputValue(new Date(entry.created_at)) === state.selectedDate);
+                document.getElementById("dailyTitle").textContent = "Classifica giornaliera";
+            } else {
+                const selDate = new Date(state.selectedDate);
+                const first = selDate.getDate() - selDate.getDay() + 1; // Lunedi
+                const last = first + 6; // Domenica
+                
+                const start = new Date(selDate.setDate(first)).setHours(0,0,0,0);
+                const end = new Date(selDate.setDate(last)).setHours(23,59,59,999);
+
+                dailyEntries = state.entries.filter((entry) => {
+                    const d = new Date(entry.created_at).getTime();
+                    return d >= start && d <= end;
+                });
+                document.getElementById("dailyTitle").textContent = "Classifica settimanale";
+            }
+
             const dailyRows = rankingRows(totalsByTribe(dailyEntries));
             updateHorizontalBarChart(charts.daily, TRIBES, TRIBES.map((tribe) => dailyRows.find((row) => row.name === tribe)?.points || 0), "Punti giornata");
             els.dailyTable.innerHTML = rankingTable(dailyRows);
@@ -745,26 +1038,43 @@
                 return;
             }
 
+            const filtered = state.entries.filter(e => 
+                e.note.toLowerCase().includes(state.historySearchQuery) || 
+                e.animatore.toLowerCase().includes(state.historySearchQuery) ||
+                e.tipo_gioco.toLowerCase().includes(state.historySearchQuery)
+            );
+
             els.historyTable.innerHTML = `
-                <div class="divide-y divide-slate-200">
-                    ${state.entries.map((entry) => {
+                <div class="divide-y divide-slate-200 dark:divide-slate-800">
+                    ${filtered.map((entry) => {
                         const colors = TRIBE_COLORS[entry.tribu] || TRIBE_COLORS.Rossi;
                         const isDeleting = state.deletingIds.has(String(entry.id));
 
                         return `
-                            <div class="grid grid-cols-[1fr_auto] gap-3 bg-white p-3">
+                            <div class="grid grid-cols-[1fr_auto] gap-3 bg-white p-3 dark:bg-slate-900 items-center">
                                 <div class="min-w-0">
                                     <div class="flex flex-wrap items-center gap-2">
-                                        <span class="${colors.bg} ${colors.text} rounded-full px-2 py-1 text-xs font-black">${entry.tribu}</span>
-                                        <span class="rounded-full bg-slate-100 px-2 py-1 text-xs font-bold text-slate-600">${entry.fascia}</span>
-                                        <span class="rounded-full bg-slate-100 px-2 py-1 text-xs font-bold text-slate-600">${entry.sottogruppo}</span>
+                                        <span class="${colors.bg} ${colors.text} dark:bg-slate-800 dark:text-slate-300 rounded-full px-2 py-1 text-xs font-black flex items-center gap-1">${entry.tribu}</span>
+                                        <span class="rounded-full bg-slate-100 px-2 py-1 text-xs font-bold text-slate-600 dark:bg-slate-800 dark:text-slate-400">${entry.fascia}</span>
+                                        <span class="rounded-full bg-slate-100 px-2 py-1 text-xs font-bold text-slate-600 dark:bg-slate-800 dark:text-slate-400">${entry.sottogruppo}</span>
                                     </div>
-                                    <p class="mt-2 text-sm font-bold text-slate-700">${entry.tipo_gioco} - <span class="text-slate-950">${formatNumber(entry.punti)} punti</span></p>
-                                    <p class="mt-1 text-xs text-slate-500">${formatDateTime(entry.created_at)}</p>
+                                    <p class="mt-2 text-sm font-bold text-slate-900 dark:text-white">
+                                        ${entry.tipo_gioco}${entry.note ? ' - ' + entry.note : ''}: 
+                                        <span class="text-sky-700 dark:text-sky-400">${formatNumber(entry.punti)} pt</span>
+                                    </p>
+                                    <p class="mt-1 text-[10px] uppercase font-bold text-slate-400 tracking-wider">
+                                        ${formatDateTime(entry.created_at)} • Da: ${entry.animatore || 'Sconosciuto'}</p>
                                 </div>
-                                <button type="button" class="delete-button h-11 w-11 rounded-lg bg-red-50 text-lg font-black text-red-700 transition active:scale-95 disabled:opacity-50" data-id="${entry.id}" ${isDeleting ? "disabled" : ""} aria-label="Elimina inserimento">
-                                    ${isDeleting ? "..." : "X"}
-                                </button>
+                                <div class="flex gap-2">
+                                    <button type="button" class="edit-button h-11 w-11 rounded-lg bg-sky-50 text-sky-700 transition active:scale-95 flex items-center justify-center dark:bg-sky-900/20 dark:text-sky-400" data-id="${entry.id}" aria-label="Modifica nota">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                                        </svg>
+                                    </button>
+                                    <button type="button" class="delete-button h-11 w-11 rounded-lg bg-red-50 text-lg font-black text-red-700 transition active:scale-95 disabled:opacity-50" data-id="${entry.id}" ${isDeleting ? "disabled" : ""} aria-label="Elimina inserimento">
+                                        ${isDeleting ? "..." : "X"}
+                                    </button>
+                                </div>
                             </div>
                         `;
                     }).join("")}
@@ -774,6 +1084,40 @@
             els.historyTable.querySelectorAll(".delete-button").forEach((button) => {
                 button.addEventListener("click", () => deleteEntry(button.dataset.id));
             });
+
+            els.historyTable.querySelectorAll(".edit-button").forEach((button) => {
+                button.addEventListener("click", () => editNote(button.dataset.id));
+            });
+        }
+
+        function renderAuditLogs() {
+            if (!els.auditTable || !state.auditAuthenticated) return;
+            if (!state.auditLogs.length) {
+                els.auditTable.innerHTML = emptyMessage("Nessun log registrato.");
+                return;
+            }
+            els.auditTable.innerHTML = `
+                <table class="w-full text-left text-[10px] sm:text-xs dark:bg-slate-900">
+                    <thead class="bg-slate-50 text-slate-500 uppercase font-bold dark:bg-slate-800 dark:text-slate-400">
+                        <tr>
+                            <th class="px-3 py-2">Data</th>
+                            <th class="px-3 py-2">Animatore</th>
+                            <th class="px-3 py-2">Evento</th>
+                            <th class="px-3 py-2">Dettagli</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-200 dark:divide-slate-800">
+                        ${state.auditLogs.map(log => `
+                            <tr class="hover:bg-slate-50 dark:hover:bg-slate-800 transition">
+                                <td class="px-3 py-2 whitespace-nowrap text-slate-400 font-mono">${formatDateTime(log.created_at)}</td>
+                                <td class="px-3 py-2 font-bold text-slate-900">${log.animatore}</td>
+                                <td class="px-3 py-2"><span class="bg-slate-100 px-1.5 py-0.5 rounded text-[10px] font-black text-slate-600 dark:bg-slate-700 dark:text-slate-300">${log.azione}</span></td>
+                                <td class="px-3 py-2 text-slate-600 leading-relaxed">${log.dettagli}</td>
+                            </tr>
+                        `).join("")}
+                    </tbody>
+                </table>
+            `;
         }
 
         function renderEmptyStateHints() {
@@ -792,8 +1136,11 @@
                 return;
             }
 
-            Chart.defaults.font.family = "Inter, ui-sans-serif, system-ui, Segoe UI, sans-serif";
-            Chart.defaults.color = "#475569";
+            const isDark = document.documentElement.classList.contains('dark');
+            Chart.defaults.font.family = "Inter, sans-serif";
+            Chart.defaults.color = isDark ? "#94a3b8" : "#475569";
+            
+            if (charts.overall) { charts.overall.destroy(); charts.fascia.destroy(); charts.tribuDetail.destroy(); charts.subgroup.destroy(); charts.daily.destroy(); }
 
             charts.overall = createHorizontalBarChart("overallChart");
             charts.fascia = createHorizontalBarChart("fasciaChart");
@@ -804,6 +1151,7 @@
 
         function createHorizontalBarChart(canvasId) {
             const canvas = document.getElementById(canvasId);
+            const isDark = document.documentElement.classList.contains('dark');
 
             return new Chart(canvas, {
                 type: "bar",
@@ -842,7 +1190,7 @@
                                 precision: 0,
                             },
                             grid: {
-                                color: "rgba(148, 163, 184, 0.2)",
+                                color: isDark ? "rgba(148, 163, 184, 0.1)" : "rgba(148, 163, 184, 0.2)",
                             },
                         },
                         y: {
@@ -927,23 +1275,23 @@
 
             return `
                 <table class="w-full text-left text-sm">
-                    <thead class="bg-slate-50 text-xs uppercase tracking-wide text-slate-500">
+                    <thead class="bg-slate-50 text-xs uppercase tracking-wide text-slate-500 dark:bg-slate-800 dark:text-slate-400">
                         <tr>
                             <th class="px-3 py-2">Pos.</th>
                             <th class="px-3 py-2">Tribu</th>
                             <th class="px-3 py-2 text-right">Punti</th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-slate-200 bg-white">
+                    <tbody class="divide-y divide-slate-200 bg-white dark:bg-slate-900 dark:divide-slate-800">
                         ${rows.map((row) => {
                             const colors = TRIBE_COLORS[row.name] || TRIBE_COLORS.Rossi;
                             return `
                                 <tr>
                                     <td class="px-3 py-3 font-black text-slate-500">${row.position}</td>
                                     <td class="px-3 py-3">
-                                        <span class="${colors.bg} ${colors.text} rounded-full px-2 py-1 text-xs font-black">${row.name}</span>
+                                        <span class="${colors.bg} ${colors.text} dark:bg-slate-800 dark:text-slate-300 rounded-full px-2 py-1 text-xs font-black flex items-center gap-1 w-fit">${row.name}</span>
                                     </td>
-                                    <td class="px-3 py-3 text-right text-base font-black text-slate-950">${formatNumber(row.points)}</td>
+                                    <td class="px-3 py-3 text-right text-base font-black text-slate-950 dark:text-white">${formatNumber(row.points)}</td>
                                 </tr>
                             `;
                         }).join("")}
@@ -959,17 +1307,17 @@
 
             return `
                 <table class="w-full text-left text-sm">
-                    <thead class="bg-slate-50 text-xs uppercase tracking-wide text-slate-500">
+                    <thead class="bg-slate-50 text-xs uppercase tracking-wide text-slate-500 dark:bg-slate-800 dark:text-slate-400">
                         <tr>
                             <th class="px-3 py-2">${firstColumnLabel}</th>
                             <th class="px-3 py-2 text-right">Punti</th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-slate-200 bg-white">
+                    <tbody class="divide-y divide-slate-200 bg-white dark:bg-slate-900 dark:divide-slate-800">
                         ${rows.map((row) => `
                             <tr>
-                                <td class="px-3 py-3 font-black text-slate-700">${row.name}</td>
-                                <td class="px-3 py-3 text-right text-base font-black text-slate-950">${formatNumber(row.points)}</td>
+                                <td class="px-3 py-3 font-black text-slate-700 dark:text-slate-300">${row.name}</td>
+                                <td class="px-3 py-3 text-right text-base font-black text-slate-950 dark:text-white">${formatNumber(row.points)}</td>
                             </tr>
                         `).join("")}
                     </tbody>
@@ -978,7 +1326,7 @@
         }
 
         function emptyMessage(message) {
-            return `<div class="bg-white px-4 py-5 text-center text-sm font-semibold text-slate-500">${message}</div>`;
+            return `<div class="bg-white px-4 py-5 text-center text-sm font-semibold text-slate-500 dark:bg-slate-900 dark:text-slate-400">${message}</div>`;
         }
 
         function normalizeEntries(entries) {
@@ -998,6 +1346,8 @@
                 sottogruppo: entry.sottogruppo || "Unico",
                 tipo_gioco: entry.tipo_gioco || "Giocone",
                 punti: Number(entry.punti) || 0,
+                note: entry.note || "",
+                animatore: entry.animatore || ""
             };
         }
 
@@ -1056,6 +1406,61 @@
             return fallback;
         }
 
+        function exportToCSV() {
+            if (state.entries.length === 0) return alert("Nessun dato da esportare.");
+            
+            const headers = ["ID", "Data", "Fascia", "Tribu", "Sottogruppo", "Gioco", "Punti", "Nota", "Animatore"];
+            const rows = state.entries.map(e => [
+                e.id, e.created_at, e.fascia, e.tribu, e.sottogruppo, e.tipo_gioco, e.punti, `"${e.note}"`, e.animatore
+            ]);
+            
+            const csvContent = "data:text/csv;charset=utf-8," 
+                + [headers, ...rows].map(e => e.join(",")).join("\n");
+                
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", `classifica_oratorio_${state.selectedDate}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            logAction("DATA_EXPORT", "Esportazione CSV dei punteggi effettuata");
+        }
+
+        function exportToPDF() {
+            const element = document.getElementById('report-content');
+            const opt = {
+                margin:       0.5,
+                filename:     `report_classifica_${state.selectedDate}.pdf`,
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { scale: 2, useCORS: true },
+                jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
+            };
+
+            setAlert("info", "Generazione PDF in corso...");
+            html2pdf().set(opt).from(element).save().then(() => {
+                logAction("DATA_EXPORT", "Esportazione PDF effettuata");
+            });
+        }
+
+        function exportAuditToCSV() {
+            if (state.auditLogs.length === 0) return alert("Nessun log da esportare.");
+            
+            const headers = ["Data", "Animatore", "Azione", "Dettagli"];
+            const rows = state.auditLogs.map(l => [
+                l.created_at, l.animatore, l.azione, `"${l.dettagli}"`
+            ]);
+            
+            const csvContent = "data:text/csv;charset=utf-8," + [headers, ...rows].map(e => e.join(",")).join("\n");
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", `audit_log_oratorio.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
         function formatNumber(value) {
             return new Intl.NumberFormat("it-IT").format(Number(value) || 0);
         }
@@ -1087,10 +1492,15 @@
             const settingsModal = document.getElementById('settingsModal');
             const closeSettings = document.getElementById('closeSettings');
             const saveSettings = document.getElementById('saveSettings');
+            const goToAudit = document.getElementById('goToAudit');
+            const exportBtn = document.getElementById('exportData');
+            const pdfBtn = document.getElementById('exportPDF');
+            const exportAuditBtn = document.getElementById('exportAudit');
 
             // 1. Apri Modale
             if (settingsBtn && settingsModal) {
                 settingsBtn.addEventListener('click', () => {
+                    
                     // Carichiamo i dati correnti
                     const s = JSON.parse(localStorage.getItem('customScores')) || {
                         "Giocone": {
@@ -1153,13 +1563,34 @@
                     alert("Punteggi salvati!");
                 });
             }
+
+            // 4. Vai all'Audit
+            if (goToAudit) {
+                goToAudit.addEventListener('click', () => setActiveTab('audit'));
+            }
+
+            // 5. Esporta
+            if (exportBtn) {
+                exportBtn.addEventListener('click', exportToCSV);
+            }
+
+            // Esporta PDF
+            if (pdfBtn) {
+                pdfBtn.addEventListener('click', exportToPDF);
+            }
+
+            // 6. Esporta Audit
+            if (exportAuditBtn) {
+                exportAuditBtn.addEventListener('click', exportAuditToCSV);
+            }
         });
     </script>
 
-    <div id="settingsModal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-        <div class="bg-white rounded-xl shadow-xl w-full max-w-sm p-6">
-            <h2 class="text-xl font-black mb-4">Punteggi Predefiniti</h2>
+    <div id="settingsModal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm">
+        <div class="bg-white dark:bg-slate-900 rounded-xl shadow-xl w-full max-w-sm p-6">
+            <h2 class="text-xl font-black mb-4 dark:text-white">Impostazioni</h2>
             <div class="space-y-4">
+                <p class="text-[10px] font-bold uppercase text-slate-400">Punteggi Predefiniti</p>
                 <div>
                     <label class="block text-xs font-bold text-slate-500 uppercase">Giocone (1° 2° 3° 4°)</label>
                     <div class="grid grid-cols-4 gap-2 mt-1">
@@ -1179,8 +1610,27 @@
                     </div>
                 </div>
                 <button id="saveSettings" class="w-full bg-sky-600 text-white py-2 rounded-lg font-black">Salva</button>
+                
+                <div class="pt-4 border-t border-slate-100 dark:border-slate-800 space-y-2">
+                    <p class="text-[10px] font-bold uppercase text-slate-400">Azioni Amministrative</p>
+                    <button id="exportData" class="w-full bg-emerald-600 text-white py-2 rounded-lg text-sm font-black">Esporta Dati (CSV)</button>
+                    <button id="exportPDF" class="w-full bg-sky-600 text-white py-2 rounded-lg text-sm font-black">Esporta Report (PDF)</button>
+                </div>
                 <button id="closeSettings" class="w-full text-slate-500 py-2">Chiudi</button>
             </div>
+        </div>
+    </div>
+
+    <!-- Modal Accesso Animatore -->
+    <div id="loginModal" class="hidden fixed inset-0 z-[60] flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-sm p-8 text-center">
+            <div class="mb-4 inline-flex h-16 w-16 items-center justify-center rounded-full bg-sky-100 text-3xl">👋</div>
+            <h2 class="text-2xl font-black text-slate-950 mb-2">Chi sei?</h2>
+            <p class="text-slate-500 mb-6 text-sm">Inserisci il tuo nome e cognome per registrare le tue azioni.</p>
+            <form id="loginForm" class="space-y-4">
+                <input type="text" id="animatoreInput" required placeholder="Nome e Cognome" class="h-12 w-full rounded-lg border border-slate-300 px-4 text-center text-base font-semibold outline-none focus:border-sky-500 focus:ring-4 focus:ring-sky-100">
+                <button type="submit" class="w-full bg-sky-600 text-white h-12 rounded-lg font-black shadow-lg shadow-sky-200 active:scale-95 transition">Inizia</button>
+            </form>
         </div>
     </div>
 </body>
