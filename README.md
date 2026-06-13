@@ -43,9 +43,6 @@ Dalla scheda **"X" (Dettagli)**:
 
 ## ⚙️ Funzionalità Avanzate
 
-### PWA (Installazione)
-L'applicazione è una Progressive Web App. Su Chrome/Edge (PC) o Safari/Chrome (Mobile) puoi cliccare su "Aggiungi a schermata Home" o sull'icona di installazione nella barra degli indirizzi per usarla come un'app nativa.
-
 ### Modalità Scura
 L'app supporta la modalità scura per una migliore leggibilità notturna. Attivala tramite l'icona del sole/luna in alto a destra.
 

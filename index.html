@@ -5,9 +5,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Classifica BellaFrà</title>
-    <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#0284c7">
-    <link rel="apple-touch-icon" href="https://img.icons8.com/parakeet/192/leaderboard.png">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -383,11 +380,6 @@
         }
 
         function init() {
-            // Registrazione Service Worker per PWA
-            if ('serviceWorker' in navigator) {
-                navigator.serviceWorker.register('sw.js').catch(() => {});
-            }
-
             // Setup Dark Mode
             if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
                 document.documentElement.classList.add('dark');
