@@ -42,9 +42,6 @@
                         <svg id="sunIcon" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707M16.071 16.071l.707.707M7.657 7.657l.707.707M12 8a4 4 0 100 8 4 4 0 000-8z" /></svg>
                         <svg id="moonIcon" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" /></svg>
                     </button>
-                    <button id="goToAudit" class="text-[10px] font-bold uppercase tracking-wider text-slate-400 hover:text-sky-600 transition">
-                        Registro Log
-                    </button>
                     <button id="changeAnimatore" class="text-[10px] font-bold uppercase tracking-wider text-slate-400 hover:text-sky-600 transition">
                         Cambia Utente
                     </button>
@@ -247,13 +244,61 @@
                 </div>
             </section>
 
-            <section id="tab-audit" class="tab-panel hidden space-y-5">
+            <section id="tab-admin" class="tab-panel hidden space-y-5">
+                <!-- Pannello Strumenti Admin -->
+                <div class="grid gap-4 sm:grid-cols-2">
+                    <div class="rounded-lg border border-slate-200 bg-white p-5 shadow-soft dark:border-slate-800 dark:bg-slate-900">
+                        <h3 class="mb-3 text-sm font-black uppercase tracking-wider text-slate-500">Esportazione Dati</h3>
+                        <div class="flex flex-col gap-2">
+                            <button id="adminExportCSV" class="flex items-center justify-center gap-2 rounded-lg bg-emerald-600 py-3 text-sm font-bold text-white transition active:scale-95">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+                                Scarica CSV (Punteggi)
+                            </button>
+                            <button id="adminExportPDF" class="flex items-center justify-center gap-2 rounded-lg bg-sky-600 py-3 text-sm font-bold text-white transition active:scale-95">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" /></svg>
+                                Genera Report PDF
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="rounded-lg border border-slate-200 bg-white p-5 shadow-soft dark:border-slate-800 dark:bg-slate-900">
+                        <h3 class="mb-3 text-sm font-black uppercase tracking-wider text-slate-500">Gestione Animatori</h3>
+                        <div class="flex flex-col gap-2">
+                            <button id="adminResetPin" class="flex items-center justify-center gap-2 rounded-lg bg-orange-600 py-3 text-sm font-bold text-white transition active:scale-95">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" /></svg>
+                                Reset PIN Animatore
+                            </button>
+                            <button id="adminImportAnimatoriCSV" class="flex items-center justify-center gap-2 rounded-lg bg-indigo-600 py-3 text-sm font-bold text-white transition active:scale-95">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 13h6m-3-3v6m-9 1V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z" /></svg>
+                                Importa Animatori (CSV)
+                            </button>
+                            <input type="file" id="animatoriCsvInput" class="hidden" accept=".csv">
+                            <button id="adminExportAnimatoriCSV" class="flex items-center justify-center gap-2 rounded-lg bg-slate-100 py-3 text-sm font-bold text-slate-600 transition hover:bg-slate-200 active:scale-95 dark:bg-slate-800 dark:text-slate-300">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
+                                Esporta Lista Animatori (CSV)
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Lista Animatori -->
+                <div class="rounded-lg border border-slate-200 bg-white p-4 shadow-soft dark:border-slate-800 dark:bg-slate-900">
+                    <div class="mb-4">
+                        <h2 class="text-lg font-black text-slate-950 dark:text-white">Lista Animatori</h2>
+                        <p class="text-sm text-slate-500">Stato del PIN per ogni utente registrato.</p>
+                        <div class="mt-3">
+                            <input id="animatoriSearch" type="text" placeholder="Cerca animatore..." class="h-10 w-full rounded-lg border border-slate-300 px-3 text-sm outline-none focus:border-sky-500 dark:bg-slate-800 dark:border-slate-700">
+                        </div>
+                    </div>
+                    <div id="animatoriTable" class="overflow-x-auto rounded-lg border border-slate-200"></div>
+                </div>
+
+                <!-- Registro Log -->
                 <div class="rounded-lg border border-slate-200 bg-white p-4 shadow-soft dark:border-slate-800 dark:bg-slate-900">
                     <div class="mb-4 flex items-center justify-between">
-                        <h2 class="text-lg font-black text-slate-950 dark:text-white">Registro Audit</h2>
-                        <button id="exportAudit" class="rounded-lg bg-slate-100 px-3 py-1 text-xs font-bold text-slate-600 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-300">Esporta Log</button>
+                        <h2 class="text-lg font-black text-slate-950 dark:text-white">Registro Log (Audit)</h2>
+                        <button id="exportAudit" class="rounded-lg bg-slate-100 px-3 py-1 text-xs font-bold text-slate-600 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-300">Esporta CSV Log</button>
                     </div>
-                    <p class="mb-4 text-sm text-slate-500">Tracciamento completo delle operazioni di sistema (ultimi 100 eventi).</p>
                     <div id="auditTable" class="overflow-x-auto rounded-lg border border-slate-200"></div>
                 </div>
             </section>
@@ -339,7 +384,10 @@
             client: null,
             animatore: localStorage.getItem("animatore_nome") || null,
             auditAuthenticated: false,
+            adminAuthenticated: false, // Nuovo stato per l'accesso al pannello admin
             auditLogs: [],
+            animatoriList: [], // Lista per il pannello admin
+            animatoriSearchQuery: "", // Filtro ricerca animatori
             historySearchQuery: "",
             offlineQueue: JSON.parse(localStorage.getItem("offline_scores") || "[]")
         };
@@ -425,6 +473,18 @@
             if (state.offlineQueue.length > 0) syncOfflineQueue();
         }
 
+        // Funzione utility per l'hashing SHA-256 dei PIN
+        async function sha256(message) {
+            if (!window.crypto || !window.crypto.subtle) {
+                throw new Error("Ambiente non sicuro: SubtleCrypto richiede HTTPS o localhost.");
+            }
+            const msgBuffer = new TextEncoder().encode(message);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            const hexHash = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+            return hexHash;
+        }
+
         function updateFilterOptions(fascia, selectElement) {
             let options = [];
 
@@ -477,10 +537,26 @@
             els.dailyTable = document.getElementById("dailyTable");
             els.historyTable = document.getElementById("historyTable");
             els.auditTable = document.getElementById("auditTable");
+            els.animatoriTable = document.getElementById("animatoriTable");
+            els.animatoriSearch = document.getElementById("animatoriSearch");
+            els.animatoriCsvInput = document.getElementById("animatoriCsvInput");
             els.loadingOverlay = document.getElementById("loadingOverlay");
             els.loginModal = document.getElementById("loginModal");
             els.loginForm = document.getElementById("loginForm");
             els.animatoreInput = document.getElementById("animatoreInput");
+            els.pinInput = document.getElementById("pinInput");
+            els.settingsModal = document.getElementById("settingsModal");
+            els.adminActionsSection = document.getElementById("adminActionsSection");
+            els.adminResetPin = document.getElementById("adminResetPin");
+            els.adminImportAnimatoriCSV = document.getElementById("adminImportAnimatoriCSV");
+            els.adminExportAnimatoriCSV = document.getElementById("adminExportAnimatoriCSV");
+            els.goToAdmin = document.getElementById("goToAdmin");
+            els.openSettings = document.getElementById("openSettings");
+            els.closeSettings = document.getElementById("closeSettings");
+            els.saveSettings = document.getElementById("saveSettings");
+            els.adminExportCSV = document.getElementById("adminExportCSV");
+            els.adminExportPDF = document.getElementById("adminExportPDF");
+            els.exportAudit = document.getElementById("exportAudit");
         }
 
         function bindEvents() {
@@ -502,6 +578,11 @@
             els.historySearch.addEventListener("input", (e) => {
                 state.historySearchQuery = e.target.value.toLowerCase();
                 renderHistory();
+            });
+
+            els.animatoriSearch.addEventListener("input", (e) => {
+                state.animatoriSearchQuery = e.target.value.toLowerCase();
+                renderAnimatoriTable();
             });
 
             els.fasciaFilter.addEventListener("change", (event) => {
@@ -534,16 +615,110 @@
                 render();
             });
 
+            // Tasto Area Admin dal modal impostazioni
+            if (els.goToAdmin) {
+                els.goToAdmin.addEventListener("click", () => setActiveTab("admin"));
+            }
+
             if (els.loginForm) {
-                els.loginForm.addEventListener("submit", (e) => {
+                els.loginForm.addEventListener("submit", async (e) => {
                     e.preventDefault();
-                    const nome = els.animatoreInput.value.trim();
-                    if (nome) {
-                        state.animatore = nome;
-                        localStorage.setItem("animatore_nome", nome);
+                    if (!state.client) return alert("Connessione al database non pronta.");
+
+                    // Normalizziamo il testo per gestire correttamente gli accenti (NFC) e rimuoviamo spazi extra
+                    const nome = els.animatoreInput.value.trim().normalize("NFC");
+                    const pin = els.pinInput.value.trim(); // Assicurati che il PIN sia trimmato
+                    const DEFAULT_PIN = "2026"; // PIN predefinito per il primo accesso
+
+                    state.loading = true;
+                    render();
+
+                    try {
+                        const hashedPin = await sha256(pin); // Hash del PIN inserito
+
+                        // 1. Cerchiamo l'animatore per nome
+                        let { data, error } = await state.client
+                            .from('animatori')
+                            .select('*')
+                            .ilike('nome', nome)
+                            .maybeSingle();
+
+                        if (error) throw error;
+
+                        // 2. Se l'animatore non esiste, verifichiamo se sta usando il PIN di registrazione
+                        if (!data) {
+                            if (pin === DEFAULT_PIN) {
+                                const hashedDefault = await sha256(DEFAULT_PIN);
+                                const { data: newData, error: createError } = await state.client
+                                    .from('animatori')
+                                    .insert({ nome, pin_hash: hashedDefault, must_change_pin: true })
+                                    .select().single();
+                                
+                                if (createError) throw createError;
+                                data = newData;
+                                logAction("AUTH_REGISTER", `Auto-registrazione animatore: ${nome}`);
+                            } else {
+                                alert("Animatore non trovato. Se è il tuo primo accesso, usa il PIN '2026' per registrarti.");
+                                return;
+                            }
+                        } else if (data.pin_hash !== hashedPin) {
+                            // 3. Se l'animatore esiste, verifichiamo che il PIN sia corretto
+                            alert("PIN errato per questo utente.");
+                            return;
+                        }
+
+                        // 4. Gestione cambio PIN obbligatorio (per nuovi utenti o reset)
+                        if (data.must_change_pin) {
+                            const newPin = prompt("È il tuo primo accesso o il PIN è stato resettato. Inserisci un nuovo PIN (min. 4 cifre):");
+                            if (!newPin || newPin.length < 4) {
+                                alert("PIN non valido. Il PIN deve avere almeno 4 cifre.");
+                                return;
+                            }
+                            const confirmNewPin = prompt("Conferma il nuovo PIN:");
+                            if (newPin !== confirmNewPin) {
+                                alert("I PIN non corrispondono.");
+                                return;
+                            }
+
+                            if (!navigator.onLine) {
+                                alert("Errore di connessione: impossibile aggiornare il PIN ora. Riprova quando sarai online.");
+                                return;
+                            }
+
+                            // Piccolo ritardo per permettere al browser di riprendersi dopo i prompt (bug comune su mobile)
+                            await new Promise(resolve => setTimeout(resolve, 200));
+
+                            const hashedNewPin = await sha256(newPin);
+                            const { error: updateError } = await state.client
+                                .from('animatori')
+                                .upsert({ 
+                                    nome: data.nome, 
+                                    pin_hash: hashedNewPin, 
+                                    must_change_pin: false 
+                                }, { onConflict: 'nome' }); // Upsert usa POST ed è più stabile di UPDATE (PATCH) su alcune reti
+
+                            if (updateError) {
+                                throw updateError;
+                            }
+                            logAction("AUTH_PIN_CHANGE", `PIN cambiato per: ${nome}`);
+                            setAlert("success", "PIN aggiornato con successo!");
+                        } else if (data.must_change_pin && pin !== DEFAULT_PIN) {
+                            // Questo caso si verifica se must_change_pin è true ma l'utente non ha usato il PIN di default.
+                            // Potrebbe indicare un tentativo di login con un PIN vecchio dopo un reset, o un errore logico.
+                            // Per ora, lo lasciamo passare se l'hash corrisponde, ma l'admin potrebbe voler investigare.
+                            // L'importante è che il flag must_change_pin venga gestito correttamente.
+                        }
+
+                        state.animatore = data.nome;
+                        localStorage.setItem("animatore_nome", data.nome);
                         els.loginModal.classList.add("hidden");
-                        logAction("AUTH_LOGIN", `Accesso effettuato correttamente da: ${nome}`);
-                        setAlert("success", `Benvenuto, ${nome}!`);
+                        logAction("AUTH_LOGIN", `Accesso autenticato per: ${data.nome}`); // Log dopo potenziale cambio PIN
+                        setAlert("success", `Benvenuto, ${data.nome}!`);
+                    } catch (err) {
+                        alert("Errore durante la verifica: " + err.message);
+                    } finally {
+                        state.loading = false;
+                        render();
                     }
                 });
             }
@@ -567,6 +742,23 @@
                     render();
                 });
             }
+
+        // --- COLLEGAMENTO EVENTI AREA ADMIN E IMPOSTAZIONI ---
+        if (els.adminExportCSV) els.adminExportCSV.addEventListener('click', exportToCSV);
+        if (els.adminExportPDF) els.adminExportPDF.addEventListener('click', exportToPDF);
+        if (els.adminResetPin) els.adminResetPin.addEventListener('click', resetAnimatorPin);
+        if (els.exportAudit) els.exportAudit.addEventListener('click', exportAuditToCSV);
+        if (els.adminExportAnimatoriCSV) els.adminExportAnimatoriCSV.addEventListener('click', exportAnimatoriCSV);
+        
+        if (els.adminImportAnimatoriCSV && els.animatoriCsvInput) {
+            els.adminImportAnimatoriCSV.addEventListener('click', () => els.animatoriCsvInput.click());
+            els.animatoriCsvInput.addEventListener('change', importAnimatoriCSV);
+        }
+
+        if (els.openSettings) els.openSettings.addEventListener('click', openSettingsModal);
+        if (els.closeSettings) els.closeSettings.addEventListener('click', () => els.settingsModal.classList.add('hidden'));
+        if (els.saveSettings) els.saveSettings.addEventListener('click', saveCustomScores);
+        if (els.goToAdmin) els.goToAdmin.addEventListener('click', () => setActiveTab('admin'));
         }
 
         function updateDarkToggleIcons(isDark) {
@@ -582,6 +774,96 @@
         function checkAnimatore() {
             if (!state.animatore && els.loginModal) {
                 els.loginModal.classList.remove("hidden");
+            }
+        }
+
+        async function resetAnimatorPin() {
+            // Richiede la password amministratore se non già autenticato per le funzioni admin
+            if (!state.adminAuthenticated) {
+                const pwd = prompt("Questa azione richiede la password amministratore:");
+                if (pwd !== "@Ginoc.bro008") {
+                    if (pwd !== null) alert("Password errata. Operazione annullata.");
+                    return;
+                }
+                state.adminAuthenticated = true; // Autentica per la sessione corrente
+            }
+
+            const animatorName = prompt("Inserisci il nome dell'animatore di cui resettare il PIN:");
+            if (!animatorName || animatorName.trim() === "") {
+                return;
+            }
+
+            const newPin = prompt(`Inserisci il nuovo PIN per ${animatorName} (min. 4 cifre). Verrà forzato il cambio al prossimo accesso.`);
+            if (!newPin || newPin.length < 4) {
+                alert("PIN non valido. Il PIN deve avere almeno 4 cifre.");
+                return;
+            }
+            const confirmNewPin = prompt("Conferma il nuovo PIN:");
+            if (newPin !== confirmNewPin) {
+                alert("I PIN non corrispondono.");
+                return;
+            }
+
+            // Ritardo per evitare "Failed to fetch" dopo il prompt nativo
+            await new Promise(resolve => setTimeout(resolve, 200));
+
+            state.loading = true;
+            render();
+
+            try {
+                const hashedNewPin = await sha256(newPin); // Hash del nuovo PIN
+                const { error } = await state.client
+                    .from('animatori')
+                    .upsert({ 
+                        nome: animatorName, 
+                        pin_hash: hashedNewPin, 
+                        must_change_pin: true 
+                    }, { onConflict: 'nome' }); // Upsert usa POST ed è più stabile di UPDATE (PATCH)
+
+                if (error) throw error;
+
+                logAction("ADMIN_PIN_RESET", `PIN resettato per: ${animatorName}`);
+                setAlert("success", `PIN di ${animatorName} resettato con successo. Dovrà cambiarlo al prossimo accesso.`);
+            } catch (err) {
+                console.error("Errore reset PIN:", err);
+                setAlert("error", readableSupabaseError(err, `Impossibile resettare il PIN per ${animatorName}. Assicurati che il nome sia corretto e che le policy RLS siano configurate.`));
+            } finally {
+                state.loading = false;
+                render();
+            }
+        }
+
+        async function deleteAnimator(nome) {
+            if (!state.client) return;
+
+            if (nome === state.animatore) {
+                alert("Non puoi eliminare il tuo stesso profilo mentre sei loggato!");
+                return;
+            }
+
+            if (!confirm(`Sei sicuro di voler eliminare l'animatore ${nome}? Questa azione è irreversibile.`)) {
+                return;
+            }
+
+            // Ritardo per evitare "Failed to fetch" dopo il confirm
+            await new Promise(resolve => setTimeout(resolve, 200));
+
+            state.loading = true;
+            render();
+
+            try {
+                const { error } = await state.client.from('animatori').delete().eq('nome', nome);
+                if (error) throw error;
+
+                logAction("ADMIN_USER_DELETE", `Eliminato animatore: ${nome}`);
+                setAlert("success", `Animatore ${nome} eliminato.`);
+                loadAdminData(); // Ricarica la lista
+            } catch (err) {
+                console.error("Errore eliminazione animatore:", err);
+                setAlert("error", readableSupabaseError(err, `Errore durante l'eliminazione di ${nome}. Controlla le policy RLS.`));
+            } finally {
+                state.loading = false;
+                render();
             }
         }
 
@@ -877,6 +1159,9 @@
                 return;
             }
 
+            // Ritardo per evitare "Failed to fetch" dopo il prompt
+            await new Promise(resolve => setTimeout(resolve, 200));
+
             try {
                 const { error } = await state.client
                     .from("punteggi")
@@ -905,16 +1190,23 @@
             }
         }
 
-        function setActiveTab(tabName) {
-            if (tabName === "audit" && !state.auditAuthenticated) {
+        async function setActiveTab(tabName) {
+            if (tabName === "admin" && !state.auditAuthenticated) {
                 const pwd = prompt("Area riservata ai responsabili. Inserisci la password:");
                 if (pwd === "@Ginoc.bro008") {
                     state.auditAuthenticated = true;
+                    
+                    // Ritardo per evitare conflitti con i caricamenti admin dopo il prompt
+                    await new Promise(resolve => setTimeout(resolve, 200));
                 } else {
+                    state.auditAuthenticated = false; // Assicurati che sia false se la password è errata
                     if (pwd !== null) alert("Accesso negato.");
                     return;
                 }
             }
+
+            // Chiudiamo il modal impostazioni se stiamo andando in admin
+            if (tabName === "admin" && els.settingsModal) els.settingsModal.classList.add("hidden");
 
             state.activeTab = tabName;
 
@@ -931,25 +1223,37 @@
             });
 
             requestAnimationFrame(() => {
+                renderSettingsModal(); // Aggiorna la visibilità delle sezioni admin
                 Object.values(charts).forEach((chart) => chart && chart.resize());
             });
 
-            if (tabName === "audit") loadAuditLogs();
+            if (tabName === "admin") loadAdminData();
         }
 
-        async function loadAuditLogs() {
+        async function loadAdminData() {
             if (!state.client || !state.auditAuthenticated) return;
             state.loading = true;
             render();
             try {
-                const { data, error } = await state.client
+                // Caricamento Logs
+                const { data: logs, error: logsError } = await state.client
                     .from('log_azioni')
                     .select('*')
                     .order('created_at', { ascending: false })
                     .limit(100);
-                if (error) throw error;
-                state.auditLogs = data || [];
+                if (logsError) throw logsError;
+                state.auditLogs = logs || [];
+
+                // Caricamento Lista Animatori
+                const { data: animatori, error: animError } = await state.client
+                    .from('animatori')
+                    .select('nome, must_change_pin')
+                    .order('nome', { ascending: true });
+                if (animError) throw animError;
+                state.animatoriList = animatori || [];
+
             } catch (e) {
+                state.auditAuthenticated = false; // Revoca l'accesso se c'è un errore nel caricamento dei log
                 console.error("Errore audit:", e);
                 setAlert("error", "Errore caricamento registro audit.");
             } finally {
@@ -986,6 +1290,13 @@
             }
         }
 
+        // Funzione per aggiornare la visibilità delle sezioni admin nel modal impostazioni
+        function renderSettingsModal() {
+            if (els.adminActionsSection) {
+                els.adminActionsSection.classList.toggle("hidden", !state.auditAuthenticated);
+            }
+        }
+
         function render() {
             renderButtons();
             renderLoading();
@@ -993,6 +1304,8 @@
             renderChartsAndTables();
             renderHistory();
             renderAuditLogs();
+            renderAnimatoriTable();
+            renderSettingsModal(); // Assicurati che il modal impostazioni sia aggiornato
             renderEmptyStateHints();
         }
 
@@ -1161,6 +1474,48 @@
                     </tbody>
                 </table>
             `;
+        }
+
+        function renderAnimatoriTable() {
+            if (!els.animatoriTable || !state.auditAuthenticated) return;
+            if (!state.animatoriList.length) {
+                els.animatoriTable.innerHTML = emptyMessage("Nessun animatore trovato.");
+                return;
+            }
+
+            const filtered = state.animatoriList.filter(a => a.nome.toLowerCase().includes(state.animatoriSearchQuery));
+
+            els.animatoriTable.innerHTML = `
+                <table class="w-full text-left text-xs dark:bg-slate-900">
+                    <thead class="bg-slate-50 text-slate-500 uppercase font-bold dark:bg-slate-800 dark:text-slate-400">
+                        <tr>
+                            <th class="px-3 py-2">Nome</th>
+                            <th class="px-3 py-2">Stato PIN</th>
+                            <th class="px-3 py-2 text-right">Azioni</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-200 dark:divide-slate-800">
+                        ${filtered.map(a => `
+                            <tr class="hover:bg-slate-50 dark:hover:bg-slate-800 transition">
+                                <td class="px-3 py-3 font-bold text-slate-900 dark:text-white">${a.nome}</td>
+                                <td class="px-3 py-3">
+                                    ${a.must_change_pin 
+                                        ? '<span class="bg-amber-100 text-amber-700 px-2 py-1 rounded-full text-[10px] font-black">DA CAMBIARE</span>' 
+                                        : '<span class="bg-emerald-100 text-emerald-700 px-2 py-1 rounded-full text-[10px] font-black">CONFIGURATO</span>'}
+                                </td>
+                                <td class="px-3 py-3 text-right">
+                                    <button class="delete-animatore-btn font-bold text-red-600 hover:text-red-800 transition" data-nome="${a.nome}">Elimina</button>
+                                </td>
+                            </tr>
+                        `).join("")}
+                    </tbody>
+                </table>
+            `;
+
+            // Bind eventi eliminazione
+            els.animatoriTable.querySelectorAll(".delete-animatore-btn").forEach(btn => {
+                btn.addEventListener("click", () => deleteAnimator(btn.dataset.nome));
+            });
         }
 
         function renderEmptyStateHints() {
@@ -1470,8 +1825,128 @@
             logAction("DATA_EXPORT", "Esportazione CSV dei punteggi effettuata");
         }
 
+        function openSettingsModal() {
+            const s = JSON.parse(localStorage.getItem('customScores')) || {
+                "Giocone": { "1": 100, "2": 80, "3": 60, "4": 40 },
+                "Piccolo": { "1": 50, "2": 40, "3": 30, "4": 20 }
+            };
+            document.getElementById('g1').value = s["Giocone"]["1"];
+            document.getElementById('g2').value = s["Giocone"]["2"];
+            document.getElementById('g3').value = s["Giocone"]["3"];
+            document.getElementById('g4').value = s["Giocone"]["4"];
+            document.getElementById('p1').value = s["Piccolo"]["1"];
+            document.getElementById('p2').value = s["Piccolo"]["2"];
+            document.getElementById('p3').value = s["Piccolo"]["3"];
+            document.getElementById('p4').value = s["Piccolo"]["4"];
+
+            els.settingsModal.classList.remove('hidden');
+            renderSettingsModal();
+        }
+
+        function saveCustomScores() {
+            const newScores = {
+                "Giocone": {
+                    "1": document.getElementById('g1').value,
+                    "2": document.getElementById('g2').value,
+                    "3": document.getElementById('g3').value,
+                    "4": document.getElementById('g4').value
+                },
+                "Piccolo": {
+                    "1": document.getElementById('p1').value,
+                    "2": document.getElementById('p2').value,
+                    "3": document.getElementById('p3').value,
+                    "4": document.getElementById('p4').value
+                }
+            };
+            localStorage.setItem('customScores', JSON.stringify(newScores));
+            els.settingsModal.classList.add('hidden');
+            suggestPresetPoints();
+            alert("Punteggi salvati!");
+        }
+
+        function exportAnimatoriCSV() {
+            if (state.animatoriList.length === 0) return alert("Nessun animatore da esportare.");
+            
+            const headers = ["Nome", "Stato PIN"];
+            const rows = state.animatoriList.map(a => [
+                a.nome, a.must_change_pin ? "DA CAMBIARE" : "CONFIGURATO"
+            ]);
+            
+            const csvContent = "data:text/csv;charset=utf-8," + [headers, ...rows].map(e => e.join(",")).join("\n");
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", `lista_animatori_oratorio.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            logAction("DATA_EXPORT", "Esportazione CSV della lista animatori effettuata");
+        }
+
+        async function importAnimatoriCSV(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = async (e) => {
+                const text = e.target.result;
+                const lines = text.split(/\r?\n/).filter(line => line.trim() !== "");
+                
+                if (lines.length === 0) return alert("Il file CSV è vuoto.");
+
+                const startIdx = lines[0].toLowerCase().includes("nome") ? 1 : 0;
+                const names = lines.slice(startIdx).map(line => {
+                    const firstCol = line.split(/[;,]/)[0];
+                    return firstCol.replace(/"/g, '').trim().normalize("NFC");
+                }).filter(n => n.length > 2);
+
+                if (names.length === 0) return alert("Nessun nome valido trovato nel file.");
+
+                if (!confirm(`Sei sicuro di voler procedere con l'importazione di ${names.length} animatori? Se alcuni nomi sono già presenti, il loro PIN verrà resettato al valore predefinito "2026" e dovranno cambiarlo al prossimo accesso.`)) {
+                    event.target.value = "";
+                    return;
+                }
+
+                state.loading = true;
+                render();
+
+                try {
+                    const defaultHash = await sha256("2026");
+                    const payloads = names.map(n => ({
+                        nome: n,
+                        pin_hash: defaultHash,
+                        must_change_pin: true
+                    }));
+
+                    const { error } = await state.client.from('animatori').upsert(payloads, { onConflict: 'nome' });
+                    if (error) throw error;
+
+                    logAction("ADMIN_USER_BULK_IMPORT", `Importati/Resettati ${names.length} animatori tramite CSV.`);
+                    setAlert("success", `${names.length} animatori elaborati con successo.`);
+                    loadAdminData();
+                } catch (err) {
+                    console.error("Errore importazione:", err);
+                    setAlert("error", readableSupabaseError(err, "Errore durante l'importazione. Controlla il formato del file e le policy RLS."));
+                } finally {
+                    state.loading = false;
+                    event.target.value = "";
+                    render();
+                }
+            };
+            reader.readAsText(file);
+        }
+
         function exportToPDF() {
             const element = document.getElementById('report-content');
+            const tabClassifica = document.getElementById('tab-classifica');
+            
+            // Se la tab classifica è nascosta (perché siamo in tab admin), html2canvas non riesce a leggerla.
+            // La rendiamo visibile temporaneamente per la cattura.
+            const wasHidden = tabClassifica.classList.contains('hidden');
+            if (wasHidden) {
+                tabClassifica.classList.remove('hidden');
+            }
+
             const opt = {
                 margin:       0.5,
                 filename:     `report_classifica_${state.selectedDate}.pdf`,
@@ -1481,9 +1956,18 @@
             };
 
             setAlert("info", "Generazione PDF in corso...");
-            html2pdf().set(opt).from(element).save().then(() => {
-                logAction("DATA_EXPORT", "Esportazione PDF effettuata");
-            });
+
+            // Diamo tempo al browser di processare la rimozione della classe 'hidden' e renderizzare i grafici
+            setTimeout(() => {
+                html2pdf().set(opt).from(element).save().then(() => {
+                    if (wasHidden) tabClassifica.classList.add('hidden');
+                    logAction("DATA_EXPORT", "Esportazione PDF effettuata");
+                }).catch(err => {
+                    if (wasHidden) tabClassifica.classList.add('hidden');
+                    console.error("Errore generazione PDF:", err);
+                    setAlert("error", "Errore durante la generazione del PDF. Riprova dalla scheda Classifica.");
+                });
+            }, 500);
         }
 
         function exportAuditToCSV() {
@@ -1529,104 +2013,6 @@
         }
 
 
-        // Aggiungi questo in fondo al tuo blocco <script> principale
-        document.addEventListener("DOMContentLoaded", () => {
-            const settingsBtn = document.getElementById('openSettings');
-            const settingsModal = document.getElementById('settingsModal');
-            const closeSettings = document.getElementById('closeSettings');
-            const saveSettings = document.getElementById('saveSettings');
-            const goToAudit = document.getElementById('goToAudit');
-            const exportBtn = document.getElementById('exportData');
-            const pdfBtn = document.getElementById('exportPDF');
-            const exportAuditBtn = document.getElementById('exportAudit');
-
-            // 1. Apri Modale
-            if (settingsBtn && settingsModal) {
-                settingsBtn.addEventListener('click', () => {
-                    
-                    // Carichiamo i dati correnti
-                    const s = JSON.parse(localStorage.getItem('customScores')) || {
-                        "Giocone": {
-                            "1": 100,
-                            "2": 80,
-                            "3": 60,
-                            "4": 40
-                        },
-                        "Piccolo": {
-                            "1": 50,
-                            "2": 40,
-                            "3": 30,
-                            "4": 20
-                        }
-                    };
-                    document.getElementById('g1').value = s["Giocone"]["1"];
-                    document.getElementById('g2').value = s["Giocone"]["2"];
-                    document.getElementById('g3').value = s["Giocone"]["3"];
-                    document.getElementById('g4').value = s["Giocone"]["4"];
-                    document.getElementById('p1').value = s["Piccolo"]["1"];
-                    document.getElementById('p2').value = s["Piccolo"]["2"];
-                    document.getElementById('p3').value = s["Piccolo"]["3"];
-                    document.getElementById('p4').value = s["Piccolo"]["4"];
-
-                    settingsModal.classList.remove('hidden');
-                });
-            }
-
-            // 2. Chiudi Modale
-            if (closeSettings && settingsModal) {
-                closeSettings.addEventListener('click', () => {
-                    settingsModal.classList.add('hidden');
-                });
-            }
-
-            // 3. Salva Punteggi
-            if (saveSettings && settingsModal) {
-                saveSettings.addEventListener('click', () => {
-                    const newScores = {
-                        "Giocone": {
-                            "1": document.getElementById('g1').value,
-                            "2": document.getElementById('g2').value,
-                            "3": document.getElementById('g3').value,
-                            "4": document.getElementById('g4').value
-                        },
-                        "Piccolo": {
-                            "1": document.getElementById('p1').value,
-                            "2": document.getElementById('p2').value,
-                            "3": document.getElementById('p3').value,
-                            "4": document.getElementById('p4').value
-                        }
-                    };
-                    localStorage.setItem('customScores', JSON.stringify(newScores));
-                    settingsModal.classList.add('hidden');
-
-                    // Aggiorniamo i punti se l'utente ha già selezionato qualcosa
-                    if (typeof suggestPresetPoints === 'function') {
-                        suggestPresetPoints();
-                    }
-                    alert("Punteggi salvati!");
-                });
-            }
-
-            // 4. Vai all'Audit
-            if (goToAudit) {
-                goToAudit.addEventListener('click', () => setActiveTab('audit'));
-            }
-
-            // 5. Esporta
-            if (exportBtn) {
-                exportBtn.addEventListener('click', exportToCSV);
-            }
-
-            // Esporta PDF
-            if (pdfBtn) {
-                pdfBtn.addEventListener('click', exportToPDF);
-            }
-
-            // 6. Esporta Audit
-            if (exportAuditBtn) {
-                exportAuditBtn.addEventListener('click', exportAuditToCSV);
-            }
-        });
     </script>
 
     <div id="settingsModal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm">
@@ -1654,11 +2040,8 @@
                 </div>
                 <button id="saveSettings" class="w-full bg-sky-600 text-white py-2 rounded-lg font-black">Salva</button>
                 
-                <div class="pt-4 border-t border-slate-100 dark:border-slate-800 space-y-2">
-                    <p class="text-[10px] font-bold uppercase text-slate-400">Azioni Amministrative</p>
-                    <button id="exportData" class="w-full bg-emerald-600 text-white py-2 rounded-lg text-sm font-black">Esporta Dati (CSV)</button>
-                    <button id="exportPDF" class="w-full bg-sky-600 text-white py-2 rounded-lg text-sm font-black">Esporta Report (PDF)</button>
-                </div>
+                <button id="goToAdmin" class="w-full bg-slate-800 text-white py-2 rounded-lg font-black mt-2">Area Admin</button>
+                
                 <button id="closeSettings" class="w-full text-slate-500 py-2">Chiudi</button>
             </div>
         </div>
@@ -1671,7 +2054,8 @@
             <h2 class="text-2xl font-black text-slate-950 mb-2">Chi sei?</h2>
             <p class="text-slate-500 mb-6 text-sm">Inserisci il tuo nome e cognome per registrare le tue azioni.</p>
             <form id="loginForm" class="space-y-4">
-                <input type="text" id="animatoreInput" required placeholder="Nome e Cognome" class="h-12 w-full rounded-lg border border-slate-300 px-4 text-center text-base font-semibold outline-none focus:border-sky-500 focus:ring-4 focus:ring-sky-100">
+                <input type="text" id="animatoreInput" required placeholder="Nome e Cognome" class="h-12 w-full rounded-lg border border-slate-300 px-4 text-center text-base font-semibold outline-none focus:border-sky-500 dark:bg-slate-50">
+                <input type="password" id="pinInput" required placeholder="Per primo accesso: 2026" class="h-12 w-full rounded-lg border border-slate-300 px-4 text-center text-base font-semibold outline-none focus:border-sky-500 dark:bg-slate-50">
                 <button type="submit" class="w-full bg-sky-600 text-white h-12 rounded-lg font-black shadow-lg shadow-sky-200 active:scale-95 transition">Inizia</button>
             </form>
         </div>
