@@ -24,7 +24,7 @@ Dalla scheda **"+" (Inserimento)**:
 - **Sottogruppo**: La lista cambia dinamicamente (es. per la 3-4-5 EL compare l'opzione "Insieme" per le somme totali).
 - **Posizione**: Selezionando il piazzamento (1°, 2°, ecc.), i punti vengono suggeriti automaticamente in base alle impostazioni.
 - **Nome Gioco / Nota**: Campo obbligatorio per specificare il motivo del punteggio.
-- **Tracciabilità**: Al primo accesso viene richiesto il nome dell'animatore; ogni azione verrà registrata con il suo nome.
+- **Tracciabilità Rapida**: Al primissimo accesso inserisci il tuo Nome e Cognome. L'app lo memorizzerà sul dispositivo e non dovrai più fare il login. Ogni punto salvato sarà associato a te automaticamente.
 - **Punti**: Puoi modificare il valore manualmente. Per togliere punti (penalità), inserisci il segno meno (es. `-50`).
 
 ### 2. Visualizzazione Classifica
@@ -49,11 +49,6 @@ L'app supporta la modalità scura per una migliore leggibilità notturna. Attiva
 ### Impostazioni Punteggi Predefiniti
 Cliccando sull'icona dell'ingranaggio in alto a destra, puoi personalizzare i punti assegnati per ogni posizione nei "Gioconi" e nei "Giochi Piccoli". Questi valori vengono salvati localmente sul tuo browser.
 
-### Sincronizzazione Real-time
-L'app usa i canali di Supabase: ogni volta che un animatore salva un punto, la classifica di tutti gli altri utenti si aggiorna automaticamente senza dover ricaricare la pagina.
-
-## 🛠️ Configurazione Tecnica
-
 - **Frontend**: HTML5, Tailwind CSS (styling), Chart.js (grafici).
 - **Backend**: Supabase (PostgreSQL + Realtime).
 
@@ -68,6 +63,12 @@ La tabella nel database deve avere le seguenti colonne:
 - `punti`: int8
 - `note`: text
 - `animatore`: text
+
+### Struttura Tabella `animatori`
+Questa tabella serve a censire gli utenti in modo semplice:
+- `id`: int8 (Primary Key, Identity)
+- `created_at`: timestamptz (Default: now())
+- `nome`: text (Unique)
 
 ## 🗄️ Manutenzione del Database
 
