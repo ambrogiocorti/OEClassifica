@@ -268,15 +268,6 @@
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" /></svg>
                                 Reset PIN Animatore
                             </button>
-                            <button id="adminImportAnimatoriCSV" class="flex items-center justify-center gap-2 rounded-lg bg-indigo-600 py-3 text-sm font-bold text-white transition active:scale-95">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 13h6m-3-3v6m-9 1V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z" /></svg>
-                                Importa Animatori (CSV)
-                            </button>
-                            <input type="file" id="animatoriCsvInput" class="hidden" accept=".csv">
-                            <button id="adminExportAnimatoriCSV" class="flex items-center justify-center gap-2 rounded-lg bg-slate-100 py-3 text-sm font-bold text-slate-600 transition hover:bg-slate-200 active:scale-95 dark:bg-slate-800 dark:text-slate-300">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
-                                Esporta Lista Animatori (CSV)
-                            </button>
                         </div>
                     </div>
                 </div>
@@ -539,7 +530,6 @@
             els.auditTable = document.getElementById("auditTable");
             els.animatoriTable = document.getElementById("animatoriTable");
             els.animatoriSearch = document.getElementById("animatoriSearch");
-            els.animatoriCsvInput = document.getElementById("animatoriCsvInput");
             els.loadingOverlay = document.getElementById("loadingOverlay");
             els.loginModal = document.getElementById("loginModal");
             els.loginForm = document.getElementById("loginForm");
@@ -548,8 +538,6 @@
             els.settingsModal = document.getElementById("settingsModal");
             els.adminActionsSection = document.getElementById("adminActionsSection");
             els.adminResetPin = document.getElementById("adminResetPin");
-            els.adminImportAnimatoriCSV = document.getElementById("adminImportAnimatoriCSV");
-            els.adminExportAnimatoriCSV = document.getElementById("adminExportAnimatoriCSV");
             els.goToAdmin = document.getElementById("goToAdmin");
             els.openSettings = document.getElementById("openSettings");
             els.closeSettings = document.getElementById("closeSettings");
@@ -748,12 +736,6 @@
         if (els.adminExportPDF) els.adminExportPDF.addEventListener('click', exportToPDF);
         if (els.adminResetPin) els.adminResetPin.addEventListener('click', resetAnimatorPin);
         if (els.exportAudit) els.exportAudit.addEventListener('click', exportAuditToCSV);
-        if (els.adminExportAnimatoriCSV) els.adminExportAnimatoriCSV.addEventListener('click', exportAnimatoriCSV);
-        
-        if (els.adminImportAnimatoriCSV && els.animatoriCsvInput) {
-            els.adminImportAnimatoriCSV.addEventListener('click', () => els.animatoriCsvInput.click());
-            els.animatoriCsvInput.addEventListener('change', importAnimatoriCSV);
-        }
 
         if (els.openSettings) els.openSettings.addEventListener('click', openSettingsModal);
         if (els.closeSettings) els.closeSettings.addEventListener('click', () => els.settingsModal.classList.add('hidden'));
@@ -1070,9 +1052,11 @@
                 
                 setAlert("warning", "Sei offline! Il punteggio è stato salvato sul telefono e verrà inviato appena torna la connessione.");
             } finally {
-                els.scoreForm.reset();
-                updateFormOptions();
-                suggestPresetPoints();
+                // Ottimizzazione velocità: manteniamo Fascia e Nota per inserimenti rapidi dello stesso gioco
+                els.posizioneInput.value = "0";
+                els.puntiInput.value = 0;
+                els.tribuInput.focus(); // Riporta il focus per la prossima squadra
+
                 state.saving = false;
                 render();
             }
@@ -1311,6 +1295,7 @@
 
         function renderLoading() {
             if (els.loadingOverlay) {
+                // L'overlay blocca solo per il caricamento iniziale, non durante il salvataggio
                 els.loadingOverlay.classList.toggle("hidden", !state.loading);
             }
         }
@@ -1783,7 +1768,7 @@
                 window.clearTimeout(setAlert.timeout);
                 setAlert.timeout = window.setTimeout(() => {
                     els.alertBox.classList.add("hidden");
-                }, 2800);
+                }, 1500); // Messaggio più breve per non intralciare l'utente
             }
         }
 
@@ -1862,78 +1847,6 @@
             els.settingsModal.classList.add('hidden');
             suggestPresetPoints();
             alert("Punteggi salvati!");
-        }
-
-        function exportAnimatoriCSV() {
-            if (state.animatoriList.length === 0) return alert("Nessun animatore da esportare.");
-            
-            const headers = ["Nome", "Stato PIN"];
-            const rows = state.animatoriList.map(a => [
-                a.nome, a.must_change_pin ? "DA CAMBIARE" : "CONFIGURATO"
-            ]);
-            
-            const csvContent = "data:text/csv;charset=utf-8," + [headers, ...rows].map(e => e.join(",")).join("\n");
-            const encodedUri = encodeURI(csvContent);
-            const link = document.createElement("a");
-            link.setAttribute("href", encodedUri);
-            link.setAttribute("download", `lista_animatori_oratorio.csv`);
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            logAction("DATA_EXPORT", "Esportazione CSV della lista animatori effettuata");
-        }
-
-        async function importAnimatoriCSV(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-
-            const reader = new FileReader();
-            reader.onload = async (e) => {
-                const text = e.target.result;
-                const lines = text.split(/\r?\n/).filter(line => line.trim() !== "");
-                
-                if (lines.length === 0) return alert("Il file CSV è vuoto.");
-
-                const startIdx = lines[0].toLowerCase().includes("nome") ? 1 : 0;
-                const names = lines.slice(startIdx).map(line => {
-                    const firstCol = line.split(/[;,]/)[0];
-                    return firstCol.replace(/"/g, '').trim().normalize("NFC");
-                }).filter(n => n.length > 2);
-
-                if (names.length === 0) return alert("Nessun nome valido trovato nel file.");
-
-                if (!confirm(`Sei sicuro di voler procedere con l'importazione di ${names.length} animatori? Se alcuni nomi sono già presenti, il loro PIN verrà resettato al valore predefinito "2026" e dovranno cambiarlo al prossimo accesso.`)) {
-                    event.target.value = "";
-                    return;
-                }
-
-                state.loading = true;
-                render();
-
-                try {
-                    const defaultHash = await sha256("2026");
-                    const payloads = names.map(n => ({
-                        nome: n,
-                        pin_hash: defaultHash,
-                        must_change_pin: true
-                    }));
-
-                    const { error } = await state.client.from('animatori').upsert(payloads, { onConflict: 'nome' });
-                    if (error) throw error;
-
-                    logAction("ADMIN_USER_BULK_IMPORT", `Importati/Resettati ${names.length} animatori tramite CSV.`);
-                    setAlert("success", `${names.length} animatori elaborati con successo.`);
-                    loadAdminData();
-                } catch (err) {
-                    console.error("Errore importazione:", err);
-                    setAlert("error", readableSupabaseError(err, "Errore durante l'importazione. Controlla il formato del file e le policy RLS."));
-                } finally {
-                    state.loading = false;
-                    event.target.value = "";
-                    render();
-                }
-            };
-            reader.readAsText(file);
         }
 
         function exportToPDF() {
